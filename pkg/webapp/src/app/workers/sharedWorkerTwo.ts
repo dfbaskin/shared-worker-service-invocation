@@ -1,11 +1,11 @@
-import { createServiceA } from '@example/service-a';
+import { createServiceB } from '@example/service-b';
 import * as Comlink from 'comlink';
 
 const ctx = globalThis as unknown as SharedWorkerGlobalScope;
 
-const serviceA = createServiceA();
+const serviceB = createServiceB();
 
 ctx.onconnect = (evt) => {
   const [port] = evt.ports;
-  Comlink.expose({ serviceA }, port);
+  Comlink.expose({ serviceB }, port);
 };

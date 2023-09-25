@@ -1,14 +1,14 @@
-import { ServiceA, getWorkerId } from '@example/definitions';
+import { ServiceC, getWorkerId } from '@example/definitions';
 
 function createResult() {
   return {
-    value: 'a',
+    value: 'c',
     timestamp: new Date().toISOString(),
     workerId: getWorkerId(),
   };
 }
 
-export function createServiceA(): ServiceA {
+export function createServiceC(): ServiceC {
   return {
     doSomething: () => createResult(),
   }

@@ -1,1 +1,1 @@
-import "./service"
+export * from "./service"
