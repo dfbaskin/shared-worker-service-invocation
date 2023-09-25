@@ -15,7 +15,11 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@example/definitions": ["pkg/definitions/src/index.ts"]
+      "@example/definitions": ["pkg/definitions/src/index.ts"],
+      "@example/service-a": ["pkg/service-a/src/index.ts"],
+      "@example/service-b": ["pkg/service-b/src/index.ts"],
+      "@example/service-c": ["pkg/service-c/src/index.ts"],
+      "@example/service-d": ["pkg/service-d/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
