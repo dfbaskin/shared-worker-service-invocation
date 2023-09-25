@@ -1,12 +1,30 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useState } from 'react';
 import styles from './app.module.scss';
-
-import NxWelcome from './nx-welcome';
+import { getWorkerApi } from './services';
 
 export function App() {
+  const [result, setResult] = useState<string>('');
+  const doSomethingA = () => {
+    const api = getWorkerApi();
+    api.serviceA
+      .doSomething()
+      .then((value) => {
+        setResult(JSON.stringify(value, null, 2));
+      })
+      .catch((error) => {
+        setResult(JSON.stringify({ error }, null, 2));
+      });
+  };
   return (
-    <div>
-      <NxWelcome title="webapp" />
+    <div className={styles.view}>
+      <div>
+        <button type="button" onClick={() => doSomethingA()}>
+          A
+        </button>
+      </div>
+      <div>
+        <pre>{result}</pre>
+      </div>
     </div>
   );
 }
