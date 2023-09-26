@@ -1,4 +1,9 @@
-import { ServiceB, getRemoteServiceA, getRemoteServiceC, getWorkerId } from '@example/definitions';
+import {
+  ServiceB,
+  getRemoteServiceA,
+  getRemoteServiceC,
+  getWorkerId,
+} from '@example/definitions';
 
 function createResult() {
   return {

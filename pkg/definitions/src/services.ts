@@ -3,17 +3,17 @@ export interface TestServiceResultA {
   timestamp: string;
 }
 
-export interface TestServiceResultB  {
+export interface TestServiceResultB {
   value: string;
   timestamp: string;
 }
 
-export interface TestServiceResultC  {
+export interface TestServiceResultC {
   value: string;
   timestamp: string;
 }
 
-export interface TestServiceResultD  {
+export interface TestServiceResultD {
   value: string;
   timestamp: string;
 }

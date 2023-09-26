@@ -24,5 +24,5 @@ export function createServiceD(): ServiceD {
         order: ['d'],
       });
     },
-  }
+  };
 }

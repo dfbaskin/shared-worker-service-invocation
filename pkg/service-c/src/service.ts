@@ -1,4 +1,9 @@
-import { ServiceC, getRemoteServiceB, getRemoteServiceD, getWorkerId } from '@example/definitions';
+import {
+  ServiceC,
+  getRemoteServiceB,
+  getRemoteServiceD,
+  getWorkerId,
+} from '@example/definitions';
 
 function createResult() {
   return {
@@ -25,5 +30,5 @@ export function createServiceC(): ServiceC {
         order: [...result.order, 'c'],
       });
     },
-  }
+  };
 }

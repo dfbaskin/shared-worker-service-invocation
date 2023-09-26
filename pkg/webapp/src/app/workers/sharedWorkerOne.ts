@@ -30,5 +30,8 @@ function bindServiceAtoD(port: MessagePort) {
 
 ctx.onconnect = (evt) => {
   const [port] = evt.ports;
-  Comlink.expose({ serviceA, bindServiceAtoB, bindServiceAtoC, bindServiceAtoD }, port);
+  Comlink.expose(
+    { serviceA, bindServiceAtoB, bindServiceAtoC, bindServiceAtoD },
+    port
+  );
 };
