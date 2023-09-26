@@ -21,16 +21,20 @@ export async function connectToSharedWorkers() {
   const workerOne = new SharedWorker(
     new URL('./workers/sharedWorkerOne.ts', import.meta.url)
   );
-  const { serviceA } = Comlink.wrap(workerOne.port) as unknown as {
+  const { serviceA, bindServiceB } = Comlink.wrap(
+    workerOne.port
+  ) as unknown as {
     serviceA: Comlink.Remote<ServiceA>;
+    bindServiceB: (port: MessagePort) => Promise<void>;
   };
   workerOne.port.start();
 
   const workerTwo = new SharedWorker(
     new URL('./workers/sharedWorkerTwo.ts', import.meta.url)
   );
-  const { serviceB } = Comlink.wrap(workerTwo.port) as unknown as {
+  const { serviceB, bindServiceA } = Comlink.wrap(workerTwo.port) as unknown as {
     serviceB: Comlink.Remote<ServiceB>;
+    bindServiceA: (port: MessagePort) => Promise<void>;
   };
   workerTwo.port.start();
 
@@ -49,4 +53,8 @@ export async function connectToSharedWorkers() {
     serviceC,
     serviceD,
   };
+
+  const { port1: aPort, port2: bPort } = new MessageChannel();
+  await bindServiceA(Comlink.transfer(aPort, [aPort]));
+  await bindServiceB(Comlink.transfer(bPort, [bPort]));
 }

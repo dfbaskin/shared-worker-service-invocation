@@ -1,13 +1,29 @@
 import { useState } from 'react';
 import styles from './app.module.scss';
-import { getWorkerApi } from './services';
+import { getWorkerApi } from './connectSharedWorkers';
 
 export function App() {
   const [result, setResult] = useState<string>('');
-  const doSomethingA = callService((api) => api.serviceA.doSomething(), setResult);
-  const doSomethingB = callService((api) => api.serviceB.doSomething(), setResult);
-  const doSomethingC = callService((api) => api.serviceC.doSomething(), setResult);
-  const doSomethingD = callService((api) => api.serviceD.doSomething(), setResult);
+  const doSomethingA = callService(
+    (api) => api.serviceA.doSomething(),
+    setResult
+  );
+  const doSomethingB = callService(
+    (api) => api.serviceB.doSomething(),
+    setResult
+  );
+  const doSomethingC = callService(
+    (api) => api.serviceC.doSomething(),
+    setResult
+  );
+  const doSomethingD = callService(
+    (api) => api.serviceD.doSomething(),
+    setResult
+  );
+  const chainForward = callService(
+    (api) => api.serviceA.chainForward(),
+    setResult
+  );
 
   return (
     <div className={styles.view}>
@@ -23,6 +39,11 @@ export function App() {
         </button>
         <button type="button" onClick={() => doSomethingD()}>
           D
+        </button>
+      </div>
+      <div>
+        <button type="button" onClick={() => chainForward()}>
+          Chain Forward
         </button>
       </div>
       <div>

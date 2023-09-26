@@ -11,5 +11,12 @@ function createResult() {
 export function createServiceB(): ServiceB {
   return {
     doSomething: () => createResult(),
+    chainForward: async (result) => {
+      return {
+        ...result,
+        b: createResult(),
+        order: [...result.order, 'b'],
+      };
+    },
   };
 }

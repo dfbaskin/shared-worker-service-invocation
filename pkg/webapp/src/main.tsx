@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
-import { connectToSharedWorkers } from './app/services';
+import { connectToSharedWorkers } from './app/connectSharedWorkers';
 import App from './app/app';
 
 connectToSharedWorkers()

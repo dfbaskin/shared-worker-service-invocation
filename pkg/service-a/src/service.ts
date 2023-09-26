@@ -1,4 +1,4 @@
-import { ServiceA, getWorkerId } from '@example/definitions';
+import { ServiceA, getRemoteServiceB, getWorkerId } from '@example/definitions';
 
 function createResult() {
   return {
@@ -11,5 +11,11 @@ function createResult() {
 export function createServiceA(): ServiceA {
   return {
     doSomething: () => createResult(),
-  }
+    chainForward: async () => {
+      return await getRemoteServiceB().chainForward({
+        a: createResult(),
+        order: ['a'],
+      });
+    },
+  };
 }

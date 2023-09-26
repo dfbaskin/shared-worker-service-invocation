@@ -28,10 +28,12 @@ export interface TestServiceResult {
 
 export interface ServiceA {
   doSomething: () => TestServiceResultA;
+  chainForward: () => Promise<TestServiceResult>;
 }
 
 export interface ServiceB {
   doSomething: () => TestServiceResultB;
+  chainForward: (result: TestServiceResult) => Promise<TestServiceResult>;
 }
 
 export interface ServiceC {
