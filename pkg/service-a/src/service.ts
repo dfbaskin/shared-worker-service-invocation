@@ -17,5 +17,12 @@ export function createServiceA(): ServiceA {
         order: ['a'],
       });
     },
+    chainBackward: async (result) => {
+      return {
+        ...result,
+        a: createResult(),
+        order: [...result.order, 'a'],
+      };
+    },
   };
 }

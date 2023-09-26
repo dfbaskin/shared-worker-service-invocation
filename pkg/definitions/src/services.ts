@@ -29,17 +29,23 @@ export interface TestServiceResult {
 export interface ServiceA {
   doSomething: () => TestServiceResultA;
   chainForward: () => Promise<TestServiceResult>;
+  chainBackward: (result: TestServiceResult) => Promise<TestServiceResult>;
 }
 
 export interface ServiceB {
   doSomething: () => TestServiceResultB;
   chainForward: (result: TestServiceResult) => Promise<TestServiceResult>;
+  chainBackward: (result: TestServiceResult) => Promise<TestServiceResult>;
 }
 
 export interface ServiceC {
   doSomething: () => TestServiceResultC;
+  chainForward: (result: TestServiceResult) => Promise<TestServiceResult>;
+  chainBackward: (result: TestServiceResult) => Promise<TestServiceResult>;
 }
 
 export interface ServiceD {
   doSomething: () => TestServiceResultD;
+  chainForward: (result: TestServiceResult) => Promise<TestServiceResult>;
+  chainBackward: () => Promise<TestServiceResult>;
 }

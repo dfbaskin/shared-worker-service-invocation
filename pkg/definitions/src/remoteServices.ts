@@ -41,9 +41,23 @@ export function getRemoteServiceC() {
   return serviceC;
 }
 
+export function setRemoteServiceC(remote: Comlink.Remote<ServiceC>) {
+  if (serviceC) {
+    throw new Error('ServiceC already initialized');
+  }
+  serviceC = remote;
+}
+
 export function getRemoteServiceD() {
   if (!serviceD) {
     throw new Error('ServiceD remote not initialized');
   }
   return serviceD;
+}
+
+export function setRemoteServiceD(remote: Comlink.Remote<ServiceD>) {
+  if (serviceD) {
+    throw new Error('ServiceD already initialized');
+  }
+  serviceD = remote;
 }
