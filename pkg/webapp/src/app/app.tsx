@@ -24,6 +24,10 @@ export function App() {
     (api) => api.serviceA.chainForward(),
     setResult
   );
+  const chainBackward = callService(
+    (api) => api.serviceD.chainBackward(),
+    setResult
+  );
 
   return (
     <div className={styles.view}>
@@ -44,6 +48,9 @@ export function App() {
       <div>
         <button type="button" onClick={() => chainForward()}>
           Chain Forward
+        </button>
+        <button type="button" onClick={() => chainBackward()}>
+          Chain Backward
         </button>
       </div>
       <div>
