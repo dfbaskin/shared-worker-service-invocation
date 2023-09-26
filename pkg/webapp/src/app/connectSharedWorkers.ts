@@ -1,45 +1,40 @@
-import { ServiceA, ServiceB, ServiceC, ServiceD } from '@example/definitions';
+import {
+  ServiceA,
+  ServiceB,
+  ServiceC,
+  ServiceD,
+  setRemoteServiceA,
+  setRemoteServiceB,
+  setRemoteServiceC,
+  setRemoteServiceD,
+} from '@example/definitions';
 import * as Comlink from 'comlink';
-
-let services:
-  | {
-      serviceA: Comlink.Remote<ServiceA>;
-      serviceB: Comlink.Remote<ServiceB>;
-      serviceC: Comlink.Remote<ServiceC>;
-      serviceD: Comlink.Remote<ServiceD>;
-    }
-  | undefined;
-
-export function getWorkerApi() {
-  if (!services) {
-    throw new Error('Services not initialized');
-  }
-  return services;
-}
 
 export async function connectToSharedWorkers() {
   const workerOne = new SharedWorker(
     new URL('./workers/sharedWorkerOne.ts', import.meta.url)
   );
-  const { serviceA, bindServiceAtoB, bindServiceAtoC, bindServiceAtoD } =
-    Comlink.wrap(workerOne.port) as unknown as {
-      serviceA: Comlink.Remote<ServiceA>;
-      bindServiceAtoB: (port: MessagePort) => Promise<void>;
-      bindServiceAtoC: (port: MessagePort) => Promise<void>;
-      bindServiceAtoD: (port: MessagePort) => Promise<void>;
-    };
+  const { serviceA, bindServiceAtoB } = Comlink.wrap(
+    workerOne.port
+  ) as unknown as {
+    serviceA: Comlink.Remote<ServiceA>;
+    bindServiceAtoB: (port: MessagePort) => Promise<void>;
+    bindServiceAtoC: (port: MessagePort) => Promise<void>;
+    bindServiceAtoD: (port: MessagePort) => Promise<void>;
+  };
   workerOne.port.start();
 
   const workerTwo = new SharedWorker(
     new URL('./workers/sharedWorkerTwo.ts', import.meta.url)
   );
-  const { serviceB, bindServiceBtoA, bindServiceBtoC, bindServiceBtoD } =
-    Comlink.wrap(workerTwo.port) as unknown as {
-      serviceB: Comlink.Remote<ServiceB>;
-      bindServiceBtoA: (port: MessagePort) => Promise<void>;
-      bindServiceBtoC: (port: MessagePort) => Promise<void>;
-      bindServiceBtoD: (port: MessagePort) => Promise<void>;
-    };
+  const { serviceB, bindServiceBtoA, bindServiceBtoC } = Comlink.wrap(
+    workerTwo.port
+  ) as unknown as {
+    serviceB: Comlink.Remote<ServiceB>;
+    bindServiceBtoA: (port: MessagePort) => Promise<void>;
+    bindServiceBtoC: (port: MessagePort) => Promise<void>;
+    bindServiceBtoD: (port: MessagePort) => Promise<void>;
+  };
   workerTwo.port.start();
 
   const workerThree = new SharedWorker(
@@ -48,11 +43,8 @@ export async function connectToSharedWorkers() {
   const {
     serviceC,
     serviceD,
-    bindServiceCtoA,
     bindServiceCtoB,
     bindServiceCtoD,
-    bindServiceDtoA,
-    bindServiceDtoB,
     bindServiceDtoC,
   } = Comlink.wrap(workerThree.port) as unknown as {
     serviceC: Comlink.Remote<ServiceC>;
@@ -66,12 +58,10 @@ export async function connectToSharedWorkers() {
   };
   workerThree.port.start();
 
-  services = {
-    serviceA,
-    serviceB,
-    serviceC,
-    serviceD,
-  };
+  setRemoteServiceA(serviceA);
+  setRemoteServiceB(serviceB);
+  setRemoteServiceC(serviceC);
+  setRemoteServiceD(serviceD);
 
   const permutations = [
     async (mc) => {

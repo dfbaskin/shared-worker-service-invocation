@@ -1,31 +1,36 @@
 import { useState } from 'react';
 import styles from './app.module.scss';
-import { getWorkerApi } from './connectSharedWorkers';
+import {
+  getRemoteServiceA,
+  getRemoteServiceB,
+  getRemoteServiceC,
+  getRemoteServiceD,
+} from '@example/definitions';
 
 export function App() {
   const [result, setResult] = useState<string>('');
   const doSomethingA = callService(
-    (api) => api.serviceA.doSomething(),
+    () => getRemoteServiceA().doSomething(),
     setResult
   );
   const doSomethingB = callService(
-    (api) => api.serviceB.doSomething(),
+    () => getRemoteServiceB().doSomething(),
     setResult
   );
   const doSomethingC = callService(
-    (api) => api.serviceC.doSomething(),
+    () => getRemoteServiceC().doSomething(),
     setResult
   );
   const doSomethingD = callService(
-    (api) => api.serviceD.doSomething(),
+    () => getRemoteServiceD().doSomething(),
     setResult
   );
   const chainForward = callService(
-    (api) => api.serviceA.chainForward(),
+    () => getRemoteServiceA().chainForward(),
     setResult
   );
   const chainBackward = callService(
-    (api) => api.serviceD.chainBackward(),
+    () => getRemoteServiceD().chainBackward(),
     setResult
   );
 
@@ -61,12 +66,11 @@ export function App() {
 }
 
 function callService(
-  fn: (api: ReturnType<typeof getWorkerApi>) => Promise<unknown>,
+  fn: () => Promise<unknown>,
   setResult: (value: string) => void
 ) {
   return () => {
-    const api = getWorkerApi();
-    fn(api)
+    fn()
       .then((value) => {
         setResult(JSON.stringify(value, null, 2));
       })
