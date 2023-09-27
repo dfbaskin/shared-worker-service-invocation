@@ -75,30 +75,14 @@ export async function connectToSharedWorkers() {
     //   await bindServiceAforWorkerTwo(Comlink.transfer(mc.port1, [mc.port1]));
     //   await bindServiceBforWorkerOne(Comlink.transfer(mc.port2, [mc.port2]));
     // },
-    // async (mc) => {
-    //   await bindServiceCforWorkerOne(Comlink.transfer(mc.port1, [mc.port1]));
-    //   await bindServiceAforWorkerThree(Comlink.transfer(mc.port2, [mc.port2]));
-    // },
-    // async (mc) => {
-    //   await bindServiceBforWorkerThree(Comlink.transfer(mc.port1, [mc.port1]));
-    //   await bindServiceCforWorkerTwo(Comlink.transfer(mc.port2, [mc.port2]));
-    // },
-    // async (mc) => {
-    //   await bindServiceBforWorkerThree(Comlink.transfer(mc.port1, [mc.port1]));
-    //   await bindServiceDforWorkerTwo(Comlink.transfer(mc.port2, [mc.port2]));
-    // },
-    // async (mc) => {
-    //   await bindServiceCtoA(Comlink.transfer(mc.port1, [mc.port1]));
-    //   await bindServiceAtoC(Comlink.transfer(mc.port2, [mc.port2]));
-    // },
-    // async (mc) => {
-    //   await bindServiceCtoD(Comlink.transfer(mc.port1, [mc.port1]));
-    //   await bindServiceDtoC(Comlink.transfer(mc.port2, [mc.port2]));
-    // },
-    // async (mc) => {
-    //   await bindServiceDtoA(Comlink.transfer(mc.port1, [mc.port1]));
-    //   await bindServiceAtoD(Comlink.transfer(mc.port2, [mc.port2]));
-    // },
+    async (mc) => {
+      await bindServiceCforWorkerOne(Comlink.transfer(mc.port1, [mc.port1]));
+      await bindServiceAforWorkerThree(Comlink.transfer(mc.port2, [mc.port2]));
+    },
+    async (mc) => {
+      await bindServiceBforWorkerThree(Comlink.transfer(mc.port1, [mc.port1]));
+      await bindServiceDforWorkerTwo(Comlink.transfer(mc.port2, [mc.port2]));
+    },
   ] as ((mc: MessageChannel) => Promise<void>)[];
   for (const fn of permutations) {
     fn(new MessageChannel());
