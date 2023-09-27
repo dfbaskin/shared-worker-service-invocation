@@ -1,4 +1,11 @@
-import { ServiceD, getRemoteServiceA, getRemoteServiceB, getRemoteServiceC, getWorkerId, logData } from '@example/definitions';
+import {
+  ServiceD,
+  getRemoteServiceA,
+  getRemoteServiceB,
+  getRemoteServiceC,
+  getWorkerId,
+  logData,
+} from '@example/definitions';
 
 function createResult() {
   return {
@@ -27,16 +34,23 @@ export function createServiceD(): ServiceD {
     transformFromA: async () => {
       const result = await getRemoteServiceA().doSomething();
       return logData({
-        ...result,
-        message: "Transformed by Service D"
-      })
+        fromA: result,
+        message: 'Transformed by Service D',
+      });
     },
     transformFromB: async () => {
       const result = await getRemoteServiceB().doSomething();
       return logData({
-        ...result,
-        message: "Transformed by Service D"
-      })
-    }
+        fromB: result,
+        message: 'Transformed by Service D',
+      });
+    },
+    transformFromC: async () => {
+      const result = await getRemoteServiceC().doSomething();
+      return logData({
+        fromC: result,
+        message: 'Transformed by Service D',
+      });
+    },
   };
 }

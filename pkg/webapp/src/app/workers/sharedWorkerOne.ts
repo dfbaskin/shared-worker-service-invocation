@@ -13,17 +13,17 @@ const ctx = globalThis as unknown as SharedWorkerGlobalScope;
 
 const serviceA = createServiceA();
 
-function bindServiceAtoB(port: MessagePort) {
+function bindServiceBforWorkerOne(port: MessagePort) {
   Comlink.expose(serviceA, port);
   setRemoteServiceB(Comlink.wrap<ServiceB>(port));
 }
 
-function bindServiceAtoC(port: MessagePort) {
+function bindServiceCforWorkerOne(port: MessagePort) {
   Comlink.expose(serviceA, port);
   setRemoteServiceC(Comlink.wrap<ServiceC>(port));
 }
 
-function bindServiceAtoD(port: MessagePort) {
+function bindServiceDforWorkerOne(port: MessagePort) {
   Comlink.expose(serviceA, port);
   setRemoteServiceD(Comlink.wrap<ServiceD>(port));
 }
@@ -31,7 +31,7 @@ function bindServiceAtoD(port: MessagePort) {
 ctx.onconnect = (evt) => {
   const [port] = evt.ports;
   Comlink.expose(
-    { serviceA, bindServiceAtoB, bindServiceAtoC, bindServiceAtoD },
+    { serviceA, bindServiceBforWorkerOne, bindServiceCforWorkerOne, bindServiceDforWorkerOne },
     port
   );
 };

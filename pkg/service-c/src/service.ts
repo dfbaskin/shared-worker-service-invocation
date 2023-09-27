@@ -35,16 +35,23 @@ export function createServiceC(): ServiceC {
     transformFromA: async () => {
       const result = await getRemoteServiceA().doSomething();
       return logData({
-        ...result,
-        message: "Transformed by Service C"
-      })
+        fromA: result,
+        message: 'Transformed by Service C',
+      });
     },
     transformFromB: async () => {
       const result = await getRemoteServiceB().doSomething();
       return logData({
-        ...result,
-        message: "Transformed by Service C"
-      })
-    }
+        fromB: result,
+        message: 'Transformed by Service C',
+      });
+    },
+    transformFromD: async () => {
+      const result = await getRemoteServiceD().doSomething();
+      return logData({
+        fromD: result,
+        message: 'Transformed by Service C',
+      });
+    },
   };
 }

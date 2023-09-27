@@ -2,7 +2,9 @@ import {
   ServiceB,
   getRemoteServiceA,
   getRemoteServiceC,
+  getRemoteServiceD,
   getWorkerId,
+  logData,
 } from '@example/definitions';
 
 function createResult() {
@@ -28,6 +30,27 @@ export function createServiceB(): ServiceB {
         ...result,
         b: createResult(),
         order: [...result.order, 'b'],
+      });
+    },
+    transformFromA: async () => {
+      const result = await getRemoteServiceA().doSomething();
+      return logData({
+        fromA: result,
+        message: 'Transformed by Service B',
+      });
+    },
+    transformFromC: async () => {
+      const result = await getRemoteServiceC().doSomething();
+      return logData({
+        fromC: result,
+        message: 'Transformed by Service B',
+      });
+    },
+    transformFromD: async () => {
+      const result = await getRemoteServiceD().doSomething();
+      return logData({
+        fromD: result,
+        message: 'Transformed by Service B',
       });
     },
   };

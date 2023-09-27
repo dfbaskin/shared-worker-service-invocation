@@ -6,114 +6,106 @@ import {
   getRemoteServiceC,
   getRemoteServiceD,
 } from '@example/definitions';
+import { CallButton } from './callButton';
+import { callbackGenerator } from './callbackGenerator';
 
 export function App() {
   const [result, setResult] = useState<string>('');
-  const callService = callServiceFactory(setResult);
+  const cb = callbackGenerator(setResult);
 
   return (
     <div className={styles.view}>
       <div>
-        <span>Direct to Services:</span>
-        <button
-          type="button"
-          onClick={callService(() => getRemoteServiceA().doSomething())}
-        >
-          A
-        </button>
-        <button
-          type="button"
-          onClick={callService(() => getRemoteServiceB().doSomething())}
-        >
-          B
-        </button>
-        <button
-          type="button"
-          onClick={callService(() => getRemoteServiceC().doSomething())}
-        >
-          C
-        </button>
-        <button
-          type="button"
-          onClick={callService(() => getRemoteServiceD().doSomething())}
-        >
-          D
-        </button>
+        <span>A-Service:</span>
+        <CallButton
+          text="A"
+          onClick={cb(() => getRemoteServiceA().doSomething())}
+        />
+        <CallButton
+          text={['A', 'B']}
+          onClick={cb(() => getRemoteServiceA().transformFromB())}
+        />
+        <CallButton
+          text={['A', 'C']}
+          onClick={cb(() => getRemoteServiceA().transformFromC())}
+        />
+        <CallButton
+          text={['A', 'D']}
+          onClick={cb(() => getRemoteServiceA().transformFromD())}
+        />
+        <CallButton
+          text={['A', 'B', 'C', 'D']}
+          onClick={cb(() => getRemoteServiceA().chainForward())}
+        />
       </div>
       <div>
-        <span>Service-to-Service:</span>
-        <button
-          type="button"
-          onClick={callService(() => getRemoteServiceA().transformFromB())}
-        >
-          A » B
-        </button>
-        <button
-          type="button"
-          onClick={callService(() => getRemoteServiceB().doSomething())}
-        >
-          B
-        </button>
-        <button
-          type="button"
-          onClick={callService(() => getRemoteServiceC().transformFromA())}
-        >
-          C » A
-        </button>
-        <button
-          type="button"
-          onClick={callService(() => getRemoteServiceC().transformFromB())}
-        >
-          C » B
-        </button>
-        <button
-          type="button"
-          onClick={callService(() => getRemoteServiceD().transformFromA())}
-        >
-          D » A
-        </button>
-        <button
-          type="button"
-          onClick={callService(() => getRemoteServiceD().transformFromB())}
-        >
-          D » B
-        </button>
+        <span>B-Service:</span>
+        <CallButton
+          text="B"
+          onClick={cb(() => getRemoteServiceB().doSomething())}
+        />
+        <CallButton
+          text={['B', 'A']}
+          onClick={cb(() => getRemoteServiceB().transformFromA())}
+        />
+        <CallButton
+          text={['B', 'C']}
+          onClick={cb(() => getRemoteServiceB().transformFromC())}
+        />
+        <CallButton
+          text={['B', 'D']}
+          onClick={cb(() => getRemoteServiceB().transformFromD())}
+        />
       </div>
       <div>
-        <span>Chaining Services:</span>
-        <button
-          type="button"
-          onClick={callService(() => getRemoteServiceA().chainForward())}
-        >
-          Chain Forward
-        </button>
-        <button
-          type="button"
-          onClick={callService(() => getRemoteServiceD().chainBackward())}
-        >
-          Chain Backward
-        </button>
+        <span>C-Service:</span>
+        <CallButton
+          text="C"
+          onClick={cb(() => getRemoteServiceC().doSomething())}
+        />
+        <CallButton
+          text={['C', 'A']}
+          onClick={cb(() => getRemoteServiceC().transformFromA())}
+        />
+        <CallButton
+          text={['C', 'B']}
+          onClick={cb(() => getRemoteServiceC().transformFromB())}
+        />
+        <CallButton
+          text={['C', 'D']}
+          onClick={cb(() => getRemoteServiceC().transformFromD())}
+        />
       </div>
       <div>
-        <pre>{result}</pre>
+        <span>D-Service:</span>
+        <CallButton
+          text="D"
+          onClick={cb(() => getRemoteServiceD().doSomething())}
+        />
+        <CallButton
+          text={['D', 'A']}
+          onClick={cb(() => getRemoteServiceD().transformFromA())}
+        />
+        <CallButton
+          text={['D', 'B']}
+          onClick={cb(() => getRemoteServiceD().transformFromB())}
+        />
+        <CallButton
+          text={['D', 'C']}
+          onClick={cb(() => getRemoteServiceD().transformFromC())}
+        />
+        <CallButton
+          text={['D', 'C', 'B', 'A']}
+          onClick={cb(() => getRemoteServiceD().chainBackward())}
+        />
       </div>
+      {result && (
+        <div>
+          <pre>{result}</pre>
+        </div>
+      )}
     </div>
   );
-}
-
-function callServiceFactory(setResult: (value: string) => void) {
-  return (fn: () => Promise<unknown>) => {
-    return () => {
-      fn()
-        .then((value) => {
-          setResult(JSON.stringify(value, null, 2));
-        })
-        .catch((error) => {
-          console.error(error);
-          setResult(JSON.stringify({ error }, null, 2));
-        });
-    };
-  };
 }
 
 export default App;
