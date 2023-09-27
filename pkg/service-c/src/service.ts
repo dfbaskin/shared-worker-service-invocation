@@ -30,5 +30,12 @@ export function createServiceC(): ServiceC {
         order: [...result.order, 'c'],
       });
     },
+    transformSettings: async () => {
+      const settings = await getRemoteServiceB().getSettings();
+      return {
+        ...settings,
+        message: "Transformed by Service C"
+      }
+    },
   };
 }

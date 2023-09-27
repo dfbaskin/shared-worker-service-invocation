@@ -54,6 +54,12 @@ export function App() {
         >
           B
         </button>
+        <button
+          type="button"
+          onClick={callService(() => getRemoteServiceC().transformSettings())}
+        >
+          C
+        </button>
       </div>
       <div>
         <button
