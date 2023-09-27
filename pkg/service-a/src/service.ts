@@ -1,4 +1,4 @@
-import { ServiceA, getRemoteServiceB, getWorkerId } from '@example/definitions';
+import { ServiceA, getRemoteServiceB, getWorkerId, logData } from '@example/definitions';
 
 function createResult() {
   return {
@@ -26,10 +26,10 @@ export function createServiceA(): ServiceA {
     },
     transformSettings: async () => {
       const settings = await getRemoteServiceB().getSettings();
-      return {
+      return logData({
         ...settings,
         message: "Transformed by Service A"
-      }
+      })
     },
   };
 }

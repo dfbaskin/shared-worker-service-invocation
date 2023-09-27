@@ -3,6 +3,7 @@ import {
   getRemoteServiceA,
   getRemoteServiceC,
   getWorkerId,
+  logData,
 } from '@example/definitions';
 
 function createResult() {
@@ -31,10 +32,10 @@ export function createServiceB(): ServiceB {
       });
     },
     getSettings: () => {
-      return {
+      return logData({
         value: 'abc',
         enabled: true,
-      };
+      });
     },
   };
 }

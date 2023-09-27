@@ -1,4 +1,4 @@
-import { ServiceD, getRemoteServiceC, getWorkerId } from '@example/definitions';
+import { ServiceD, getRemoteServiceB, getRemoteServiceC, getWorkerId, logData } from '@example/definitions';
 
 function createResult() {
   return {
@@ -22,6 +22,13 @@ export function createServiceD(): ServiceD {
       return await getRemoteServiceC().chainBackward({
         d: createResult(),
         order: ['d'],
+      });
+    },
+    transformSettings: async () => {
+      const settings = await getRemoteServiceB().getSettings();
+      return logData({
+        ...settings,
+        message: "Transformed by Service D"
       });
     },
   };

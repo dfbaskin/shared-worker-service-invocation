@@ -57,4 +57,5 @@ export interface ServiceD {
   doSomething: () => TestServiceResultD;
   chainForward: (result: TestServiceResult) => Promise<TestServiceResult>;
   chainBackward: () => Promise<TestServiceResult>;
+  transformSettings: () => Promise<ServiceSettings>;
 }
