@@ -36,6 +36,7 @@ export interface ServiceA {
   doSomething: () => TestServiceResultA;
   chainForward: () => Promise<TestServiceResult>;
   chainBackward: (result: TestServiceResult) => Promise<TestServiceResult>;
+  transformSettings: () => Promise<ServiceSettings>;
 }
 
 export interface ServiceB {

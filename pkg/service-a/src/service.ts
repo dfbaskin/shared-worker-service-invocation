@@ -24,5 +24,12 @@ export function createServiceA(): ServiceA {
         order: [...result.order, 'a'],
       };
     },
+    transformSettings: async () => {
+      const settings = await getRemoteServiceB().getSettings();
+      return {
+        ...settings,
+        message: "Transformed by Service A"
+      }
+    },
   };
 }

@@ -44,6 +44,12 @@ export function App() {
         <span>Get Settings:</span>
         <button
           type="button"
+          onClick={callService(() => getRemoteServiceA().transformSettings())}
+        >
+          A
+        </button>
+        <button
+          type="button"
           onClick={callService(() => getRemoteServiceB().getSettings())}
         >
           B
