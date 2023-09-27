@@ -1,8 +1,4 @@
-import {
-  ServiceA,
-  ServiceC,
-  ServiceD,
-} from '@example/definitions';
+import { ServiceA, ServiceC, ServiceD } from '@example/definitions';
 import { createServiceB, bindingsServiceB } from '@example/service-b';
 import * as Comlink from 'comlink';
 
@@ -28,7 +24,12 @@ function bindServiceDforWorkerTwo(port: MessagePort) {
 ctx.onconnect = (evt) => {
   const [port] = evt.ports;
   Comlink.expose(
-    { serviceB, bindServiceAforWorkerTwo, bindServiceCforWorkerTwo, bindServiceDforWorkerTwo },
+    {
+      serviceB,
+      bindServiceAforWorkerTwo,
+      bindServiceCforWorkerTwo,
+      bindServiceDforWorkerTwo,
+    },
     port
   );
 };
