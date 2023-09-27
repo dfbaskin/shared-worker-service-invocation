@@ -9,52 +9,57 @@ import {
 
 export function App() {
   const [result, setResult] = useState<string>('');
-  const doSomethingA = callService(
-    () => getRemoteServiceA().doSomething(),
-    setResult
-  );
-  const doSomethingB = callService(
-    () => getRemoteServiceB().doSomething(),
-    setResult
-  );
-  const doSomethingC = callService(
-    () => getRemoteServiceC().doSomething(),
-    setResult
-  );
-  const doSomethingD = callService(
-    () => getRemoteServiceD().doSomething(),
-    setResult
-  );
-  const chainForward = callService(
-    () => getRemoteServiceA().chainForward(),
-    setResult
-  );
-  const chainBackward = callService(
-    () => getRemoteServiceD().chainBackward(),
-    setResult
-  );
+  const callService = callServiceFactory(setResult);
 
   return (
     <div className={styles.view}>
       <div>
-        <button type="button" onClick={() => doSomethingA()}>
+        <span>Do Something:</span>
+        <button
+          type="button"
+          onClick={callService(() => getRemoteServiceA().doSomething())}
+        >
           A
         </button>
-        <button type="button" onClick={() => doSomethingB()}>
+        <button
+          type="button"
+          onClick={callService(() => getRemoteServiceB().doSomething())}
+        >
           B
         </button>
-        <button type="button" onClick={() => doSomethingC()}>
+        <button
+          type="button"
+          onClick={callService(() => getRemoteServiceC().doSomething())}
+        >
           C
         </button>
-        <button type="button" onClick={() => doSomethingD()}>
+        <button
+          type="button"
+          onClick={callService(() => getRemoteServiceD().doSomething())}
+        >
           D
         </button>
       </div>
       <div>
-        <button type="button" onClick={() => chainForward()}>
+        <span>Get Settings:</span>
+        <button
+          type="button"
+          onClick={callService(() => getRemoteServiceB().getSettings())}
+        >
+          B
+        </button>
+      </div>
+      <div>
+        <button
+          type="button"
+          onClick={callService(() => getRemoteServiceA().chainForward())}
+        >
           Chain Forward
         </button>
-        <button type="button" onClick={() => chainBackward()}>
+        <button
+          type="button"
+          onClick={callService(() => getRemoteServiceD().chainBackward())}
+        >
           Chain Backward
         </button>
       </div>
@@ -65,18 +70,17 @@ export function App() {
   );
 }
 
-function callService(
-  fn: () => Promise<unknown>,
-  setResult: (value: string) => void
-) {
-  return () => {
-    fn()
-      .then((value) => {
-        setResult(JSON.stringify(value, null, 2));
-      })
-      .catch((error) => {
-        setResult(JSON.stringify({ error }, null, 2));
-      });
+function callServiceFactory(setResult: (value: string) => void) {
+  return (fn: () => Promise<unknown>) => {
+    return () => {
+      fn()
+        .then((value) => {
+          setResult(JSON.stringify(value, null, 2));
+        })
+        .catch((error) => {
+          setResult(JSON.stringify({ error }, null, 2));
+        });
+    };
   };
 }
 

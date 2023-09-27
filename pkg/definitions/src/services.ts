@@ -8,6 +8,12 @@ export interface TestServiceResultB {
   timestamp: string;
 }
 
+export interface ServiceSettings {
+  value: string;
+  enabled: boolean;
+  message?: string;
+}
+
 export interface TestServiceResultC {
   value: string;
   timestamp: string;
@@ -36,6 +42,7 @@ export interface ServiceB {
   doSomething: () => TestServiceResultB;
   chainForward: (result: TestServiceResult) => Promise<TestServiceResult>;
   chainBackward: (result: TestServiceResult) => Promise<TestServiceResult>;
+  getSettings: () => ServiceSettings;
 }
 
 export interface ServiceC {

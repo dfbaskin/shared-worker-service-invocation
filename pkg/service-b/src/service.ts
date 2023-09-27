@@ -30,5 +30,11 @@ export function createServiceB(): ServiceB {
         order: [...result.order, 'b'],
       });
     },
+    getSettings: () => {
+      return {
+        value: 'abc',
+        enabled: true,
+      };
+    },
   };
 }
