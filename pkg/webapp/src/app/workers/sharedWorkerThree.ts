@@ -1,15 +1,12 @@
 import {
-  setRemoteServiceA,
   ServiceA,
-  setRemoteServiceB,
   ServiceB,
-  setRemoteServiceC,
   ServiceC,
-  setRemoteServiceD,
   ServiceD,
+  setServiceBindings,
 } from '@example/definitions';
-import { createServiceC } from '@example/service-c';
-import { createServiceD } from '@example/service-d';
+import { createServiceC, bindingsServiceC } from '@example/service-c';
+import { createServiceD, bindingsServiceD } from '@example/service-d';
 import * as Comlink from 'comlink';
 
 const ctx = globalThis as unknown as SharedWorkerGlobalScope;
@@ -17,34 +14,38 @@ const ctx = globalThis as unknown as SharedWorkerGlobalScope;
 const serviceC = createServiceC();
 const serviceD = createServiceD();
 
-function bindServiceCtoA(port: MessagePort) {
+setServiceBindings([[bindLocalServiceCtoD, bindLocalServiceDtoC]]);
+
+function bindServiceAforWorkerThreeServiceC(port: MessagePort) {
   Comlink.expose(serviceC, port);
-  setRemoteServiceA(Comlink.wrap<ServiceA>(port));
+  bindingsServiceC.setRemoteServiceA(Comlink.wrap<ServiceA>(port));
 }
 
-function bindServiceCtoB(port: MessagePort) {
+function bindServiceBforWorkerThreeServiceC(port: MessagePort) {
   Comlink.expose(serviceC, port);
-  setRemoteServiceB(Comlink.wrap<ServiceB>(port));
+  bindingsServiceC.setRemoteServiceB(Comlink.wrap<ServiceB>(port));
 }
 
-function bindServiceCtoD(port: MessagePort) {
+function bindServiceAforWorkerThreeServiceD(port: MessagePort) {
+  Comlink.expose(serviceD, port);
+  bindingsServiceD.setRemoteServiceA(Comlink.wrap<ServiceA>(port));
+}
+
+function bindServiceBforWorkerThreeServiceD(port: MessagePort) {
+  Comlink.expose(serviceD, port);
+  bindingsServiceD.setRemoteServiceB(Comlink.wrap<ServiceB>(port));
+}
+
+function bindLocalServiceCtoD(port: MessagePort) {
   Comlink.expose(serviceC, port);
-  setRemoteServiceD(Comlink.wrap<ServiceD>(port));
+  bindingsServiceC.setRemoteServiceD(Comlink.wrap<ServiceD>(port));
+  return Promise.resolve();
 }
 
-function bindServiceDtoA(port: MessagePort) {
+function bindLocalServiceDtoC(port: MessagePort) {
   Comlink.expose(serviceD, port);
-  setRemoteServiceA(Comlink.wrap<ServiceA>(port));
-}
-
-function bindServiceDtoB(port: MessagePort) {
-  Comlink.expose(serviceD, port);
-  setRemoteServiceB(Comlink.wrap<ServiceB>(port));
-}
-
-function bindServiceDtoC(port: MessagePort) {
-  Comlink.expose(serviceD, port);
-  setRemoteServiceC(Comlink.wrap<ServiceC>(port));
+  bindingsServiceD.setRemoteServiceC(Comlink.wrap<ServiceC>(port));
+  return Promise.resolve();
 }
 
 ctx.onconnect = (evt) => {
@@ -53,12 +54,10 @@ ctx.onconnect = (evt) => {
     {
       serviceC,
       serviceD,
-      bindServiceCtoA,
-      bindServiceCtoB,
-      bindServiceCtoD,
-      bindServiceDtoA,
-      bindServiceDtoB,
-      bindServiceDtoC,
+      bindServiceAforWorkerThreeServiceC,
+      bindServiceBforWorkerThreeServiceC,
+      bindServiceAforWorkerThreeServiceD,
+      bindServiceBforWorkerThreeServiceD,
     },
     port
   );
