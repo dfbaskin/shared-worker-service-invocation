@@ -7,6 +7,7 @@ import {
   setRemoteServiceB,
   setRemoteServiceC,
   setRemoteServiceD,
+  setServiceBindings,
 } from '@example/definitions';
 import * as Comlink from 'comlink';
 
@@ -51,13 +52,17 @@ export async function connectToSharedWorkers() {
   const {
     serviceC,
     serviceD,
-    bindServiceAforWorkerThree,
-    bindServiceBforWorkerThree,
+    bindServiceAforWorkerThreeServiceC,
+    bindServiceBforWorkerThreeServiceC,
+    bindServiceAforWorkerThreeServiceD,
+    bindServiceBforWorkerThreeServiceD,
   } = Comlink.wrap(workerThree.port) as unknown as {
     serviceC: Comlink.Remote<ServiceC>;
     serviceD: Comlink.Remote<ServiceD>;
-    bindServiceAforWorkerThree: BindingFn;
-    bindServiceBforWorkerThree: BindingFn;
+    bindServiceAforWorkerThreeServiceC: BindingFn;
+    bindServiceBforWorkerThreeServiceC: BindingFn;
+    bindServiceAforWorkerThreeServiceD: BindingFn;
+    bindServiceBforWorkerThreeServiceD: BindingFn;
   };
   workerThree.port.start();
 
@@ -66,25 +71,11 @@ export async function connectToSharedWorkers() {
   setRemoteServiceC(serviceC);
   setRemoteServiceD(serviceD);
 
-  const permutations = [
-    async (mc) => {
-      await bindServiceBforWorkerOne(Comlink.transfer(mc.port1, [mc.port1]));
-      await bindServiceAforWorkerTwo(Comlink.transfer(mc.port2, [mc.port2]));
-    },
-    // async (mc) => {
-    //   await bindServiceAforWorkerTwo(Comlink.transfer(mc.port1, [mc.port1]));
-    //   await bindServiceBforWorkerOne(Comlink.transfer(mc.port2, [mc.port2]));
-    // },
-    async (mc) => {
-      await bindServiceCforWorkerOne(Comlink.transfer(mc.port1, [mc.port1]));
-      await bindServiceAforWorkerThree(Comlink.transfer(mc.port2, [mc.port2]));
-    },
-    async (mc) => {
-      await bindServiceBforWorkerThree(Comlink.transfer(mc.port1, [mc.port1]));
-      await bindServiceDforWorkerTwo(Comlink.transfer(mc.port2, [mc.port2]));
-    },
-  ] as ((mc: MessageChannel) => Promise<void>)[];
-  for (const fn of permutations) {
-    fn(new MessageChannel());
-  }
+  await setServiceBindings([
+    [bindServiceBforWorkerOne, bindServiceAforWorkerTwo],
+    [bindServiceDforWorkerOne, bindServiceAforWorkerThreeServiceD],
+    [bindServiceCforWorkerOne, bindServiceAforWorkerThreeServiceC],
+    [bindServiceDforWorkerTwo, bindServiceBforWorkerThreeServiceD],
+    [bindServiceCforWorkerTwo, bindServiceBforWorkerThreeServiceC],
+  ]);
 }

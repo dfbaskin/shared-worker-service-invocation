@@ -2,11 +2,8 @@ import {
   ServiceB,
   ServiceC,
   ServiceD,
-  setRemoteServiceB,
-  setRemoteServiceC,
-  setRemoteServiceD,
 } from '@example/definitions';
-import { createServiceA } from '@example/service-a';
+import { createServiceA, bindingsServiceA } from '@example/service-a';
 import * as Comlink from 'comlink';
 
 const ctx = globalThis as unknown as SharedWorkerGlobalScope;
@@ -15,17 +12,17 @@ const serviceA = createServiceA();
 
 function bindServiceBforWorkerOne(port: MessagePort) {
   Comlink.expose(serviceA, port);
-  setRemoteServiceB(Comlink.wrap<ServiceB>(port));
+  bindingsServiceA.setRemoteServiceB(Comlink.wrap<ServiceB>(port));
 }
 
 function bindServiceCforWorkerOne(port: MessagePort) {
   Comlink.expose(serviceA, port);
-  setRemoteServiceC(Comlink.wrap<ServiceC>(port));
+  bindingsServiceA.setRemoteServiceC(Comlink.wrap<ServiceC>(port));
 }
 
 function bindServiceDforWorkerOne(port: MessagePort) {
   Comlink.expose(serviceA, port);
-  setRemoteServiceD(Comlink.wrap<ServiceD>(port));
+  bindingsServiceA.setRemoteServiceD(Comlink.wrap<ServiceD>(port));
 }
 
 ctx.onconnect = (evt) => {
