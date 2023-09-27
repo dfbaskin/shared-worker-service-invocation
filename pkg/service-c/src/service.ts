@@ -1,5 +1,6 @@
 import {
   ServiceC,
+  getRemoteServiceA,
   getRemoteServiceB,
   getRemoteServiceD,
   getWorkerId,
@@ -8,7 +9,7 @@ import {
 
 function createResult() {
   return {
-    value: 'c',
+    value: 'C-service',
     timestamp: new Date().toISOString(),
     workerId: getWorkerId(),
   };
@@ -31,12 +32,19 @@ export function createServiceC(): ServiceC {
         order: [...result.order, 'c'],
       });
     },
-    transformSettings: async () => {
-      const settings = await getRemoteServiceB().getSettings();
+    transformFromA: async () => {
+      const result = await getRemoteServiceA().doSomething();
       return logData({
-        ...settings,
+        ...result,
         message: "Transformed by Service C"
       })
     },
+    transformFromB: async () => {
+      const result = await getRemoteServiceB().doSomething();
+      return logData({
+        ...result,
+        message: "Transformed by Service C"
+      })
+    }
   };
 }

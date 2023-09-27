@@ -3,12 +3,11 @@ import {
   getRemoteServiceA,
   getRemoteServiceC,
   getWorkerId,
-  logData,
 } from '@example/definitions';
 
 function createResult() {
   return {
-    value: 'b',
+    value: 'B-service',
     timestamp: new Date().toISOString(),
     workerId: getWorkerId(),
   };
@@ -29,12 +28,6 @@ export function createServiceB(): ServiceB {
         ...result,
         b: createResult(),
         order: [...result.order, 'b'],
-      });
-    },
-    getSettings: () => {
-      return logData({
-        value: 'abc',
-        enabled: true,
       });
     },
   };

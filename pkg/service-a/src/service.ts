@@ -2,7 +2,7 @@ import { ServiceA, getRemoteServiceB, getWorkerId, logData } from '@example/defi
 
 function createResult() {
   return {
-    value: 'a',
+    value: 'A-service',
     timestamp: new Date().toISOString(),
     workerId: getWorkerId(),
   };
@@ -24,12 +24,12 @@ export function createServiceA(): ServiceA {
         order: [...result.order, 'a'],
       };
     },
-    transformSettings: async () => {
-      const settings = await getRemoteServiceB().getSettings();
+    transformFromB: async () => {
+      const result = await getRemoteServiceB().doSomething();
       return logData({
-        ...settings,
+        ...result,
         message: "Transformed by Service A"
       })
-    },
+    }
   };
 }

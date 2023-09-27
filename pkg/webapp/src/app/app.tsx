@@ -14,7 +14,7 @@ export function App() {
   return (
     <div className={styles.view}>
       <div>
-        <span>Do Something:</span>
+        <span>Direct to Services:</span>
         <button
           type="button"
           onClick={callService(() => getRemoteServiceA().doSomething())}
@@ -41,33 +41,46 @@ export function App() {
         </button>
       </div>
       <div>
-        <span>Get Settings:</span>
+        <span>Service-to-Service:</span>
         <button
           type="button"
-          onClick={callService(() => getRemoteServiceA().transformSettings())}
+          onClick={callService(() => getRemoteServiceA().transformFromB())}
         >
-          A
+          A » B
         </button>
         <button
           type="button"
-          onClick={callService(() => getRemoteServiceB().getSettings())}
+          onClick={callService(() => getRemoteServiceB().doSomething())}
         >
           B
         </button>
         <button
           type="button"
-          onClick={callService(() => getRemoteServiceC().transformSettings())}
+          onClick={callService(() => getRemoteServiceC().transformFromA())}
         >
-          C
+          C » A
         </button>
         <button
           type="button"
-          onClick={callService(() => getRemoteServiceD().transformSettings())}
+          onClick={callService(() => getRemoteServiceC().transformFromB())}
         >
-          D
+          C » B
+        </button>
+        <button
+          type="button"
+          onClick={callService(() => getRemoteServiceD().transformFromA())}
+        >
+          D » A
+        </button>
+        <button
+          type="button"
+          onClick={callService(() => getRemoteServiceD().transformFromB())}
+        >
+          D » B
         </button>
       </div>
       <div>
+        <span>Chaining Services:</span>
         <button
           type="button"
           onClick={callService(() => getRemoteServiceA().chainForward())}
@@ -96,6 +109,7 @@ function callServiceFactory(setResult: (value: string) => void) {
           setResult(JSON.stringify(value, null, 2));
         })
         .catch((error) => {
+          console.error(error);
           setResult(JSON.stringify({ error }, null, 2));
         });
     };
