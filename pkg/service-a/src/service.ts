@@ -1,8 +1,10 @@
 import {
   ServiceA,
+  getRemoteServiceB,
+  getRemoteServiceC,
+  getRemoteServiceD,
   getWorkerId,
   logData,
-  servicesBindings,
 } from '@example/definitions';
 
 function createResult() {
@@ -13,16 +15,16 @@ function createResult() {
   };
 }
 
-export const bindingsServiceA = servicesBindings();
-
 export function createServiceA(): ServiceA {
   return {
     doSomething: () => logData(createResult()),
     chainForward: async () => {
-      return await bindingsServiceA.getRemoteServiceB().chainForward({
-        a: createResult(),
-        order: ['a'],
-      });
+      return await getRemoteServiceB().then((svc) =>
+        svc.chainForward({
+          a: createResult(),
+          order: ['a'],
+        })
+      );
     },
     chainBackward: async (result) => {
       return {
@@ -32,21 +34,21 @@ export function createServiceA(): ServiceA {
       };
     },
     transformFromB: async () => {
-      const result = await bindingsServiceA.getRemoteServiceB().doSomething();
+      const result = await getRemoteServiceB().then((svc) => svc.doSomething());
       return logData({
         fromB: result,
         message: 'Transformed by Service A',
       });
     },
     transformFromC: async () => {
-      const result = await bindingsServiceA.getRemoteServiceC().doSomething();
+      const result = await getRemoteServiceC().then((svc) => svc.doSomething());
       return logData({
         fromC: result,
         message: 'Transformed by Service A',
       });
     },
     transformFromD: async () => {
-      const result = await bindingsServiceA.getRemoteServiceD().doSomething();
+      const result = await getRemoteServiceD().then((svc) => svc.doSomething());
       return logData({
         fromD: result,
         message: 'Transformed by Service A',
