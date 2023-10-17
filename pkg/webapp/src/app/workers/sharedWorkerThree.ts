@@ -1,4 +1,4 @@
-import { registerServiceInstance } from '@example/definitions';
+import { mapRemoteService } from '@example/definitions';
 import { createServiceC } from '@example/service-c';
 import { createServiceD } from '@example/service-d';
 import * as Comlink from 'comlink';
@@ -7,9 +7,6 @@ const ctx = globalThis as unknown as SharedWorkerGlobalScope;
 
 const serviceC = createServiceC();
 const serviceD = createServiceD();
-
-registerServiceInstance('c-service', serviceC);
-registerServiceInstance('d-service', serviceD);
 
 ctx.onconnect = (evt) => {
   const [port] = evt.ports;
@@ -27,6 +24,9 @@ ctx.onconnect = (evt) => {
             throw new Error(`Service "${serviceName}" is not implemented by this worker.`);
         }
       },
+      mapRemoteServiceOnPort: (serviceName: string, port: MessagePort) => {
+        mapRemoteService(serviceName, Comlink.wrap(port));
+      }
     },
     port
   );

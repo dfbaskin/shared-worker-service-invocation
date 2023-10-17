@@ -3,7 +3,6 @@ import {
   getWorkerId,
   logData,
   getRemoteServiceA,
-  getRemoteServiceB,
   getRemoteServiceC,
   getRemoteServiceD,
 } from '@example/definitions';
@@ -38,7 +37,7 @@ export function createServiceB(): ServiceB {
       );
     },
     transformFromA: async () => {
-      const result = await getRemoteServiceB().then((svc) => svc.doSomething());
+      const result = await getRemoteServiceA().then((svc) => svc.doSomething());
       return logData({
         fromA: result,
         message: 'Transformed by Service B',
