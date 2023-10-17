@@ -27,6 +27,7 @@ const serviceDiscoveryState = (function () {
             type: 'serviceLocated',
             serviceId: message.serviceId,
             requestId: message.requestId,
+            // This doesn't work for MessageChanel
             port: transfer(port2, [port2]),
           };
           return channel.postMessage(response);
@@ -112,11 +113,20 @@ export async function getRemoteService<T>(
   return remoteService;
 }
 
-export function registerServiceInstance<T>(serviceId: string, service: T) {
+export function registerServiceInstance(serviceId: string, service: unknown) {
   const { localServiceMap } = serviceDiscoveryState();
   if (localServiceMap.has(serviceId)) {
     throw new Error(`Service with id ${serviceId} already registered`);
   }
 
   localServiceMap.set(serviceId, service);
+}
+
+export function mapRemoteService(serviceId: string, service: unknown) {
+  const { remoteServiceMap } = serviceDiscoveryState();
+  if (remoteServiceMap.has(serviceId)) {
+    throw new Error(`Remote service with id ${serviceId} is already registered`);
+  }
+
+  remoteServiceMap.set(serviceId, service);
 }
