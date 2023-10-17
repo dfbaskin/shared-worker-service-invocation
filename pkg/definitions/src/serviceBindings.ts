@@ -1,12 +1,18 @@
 import * as Comlink from 'comlink';
-import { mapRemoteService } from './serviceRegistration';
+import {
+  isRemoteServiceRegistered,
+  mapRemoteService,
+} from './serviceRegistration';
 
 export interface SharedWorkerService {
   exposeServiceOnPort: (serviceId: string, port: MessagePort) => Promise<void>;
   mapRemoteServiceOnPort: (
     serviceId: string,
-    port: MessagePort
-  ) => Promise<void>;
+    getMessagePort: () => Promise<MessagePort>
+  ) => Promise<boolean>;
+  workerInfo: () => Promise<{
+    title: string;
+  }>;
 }
 
 export function wrapSharedWorkerService(port: MessagePort) {
@@ -31,15 +37,24 @@ export async function mapServiceToService(
   to: Iterable<SharedWorkerService>
 ) {
   for (const remote of to) {
-    const { port1, port2 } = new MessageChannel();
-    await provider.exposeServiceOnPort(
+    const getMessagePortOnlyIfNeeded = Comlink.proxy(async () => {
+      const { port1, port2 } = new MessageChannel();
+      await provider.exposeServiceOnPort(
+        serviceId,
+        Comlink.transfer(port1, [port1])
+      );
+      return Comlink.transfer(port2, [port2]);
+    });
+    const registered = await remote.mapRemoteServiceOnPort(
       serviceId,
-      Comlink.transfer(port1, [port1])
+      getMessagePortOnlyIfNeeded
     );
-    await remote.mapRemoteServiceOnPort(
-      serviceId,
-      Comlink.transfer(port2, [port2])
-    );
+    if (!registered) {
+      const { title } = await remote.workerInfo();
+      console.log(
+        `Service "${serviceId}" was previously registered for ${title}.`
+      );
+    }
   }
 }
 
@@ -56,7 +71,15 @@ export function exposeServiceOnPort(services: Record<string, unknown>) {
 }
 
 export function mapRemoteServiceOnPort() {
-  return (serviceId: string, port: MessagePort) => {
+  return async (
+    serviceId: string,
+    getMessagePortOnlyIfNeeded: () => Promise<MessagePort>
+  ) => {
+    if (isRemoteServiceRegistered(serviceId)) {
+      return false;
+    }
+    const port = await getMessagePortOnlyIfNeeded();
     mapRemoteService(serviceId, Comlink.wrap(port));
+    return true;
   };
 }

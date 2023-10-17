@@ -14,6 +14,9 @@ ctx.onconnect = (evt) => {
         'b-service': serviceB,
       }),
       mapRemoteServiceOnPort: mapRemoteServiceOnPort(),
+      workerInfo: () => ({
+        title: "Worker Two"
+      })
     },
     port
   );
