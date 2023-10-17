@@ -10,17 +10,17 @@ ctx.onconnect = (evt) => {
   const [port] = evt.ports;
   Comlink.expose(
     {
-      exposeServiceOnPort: (serviceName: string, port: MessagePort) => {
-        switch(serviceName) {
+      exposeServiceOnPort: (serviceId: string, port: MessagePort) => {
+        switch(serviceId) {
           case 'b-service':
             Comlink.expose(serviceB, port);
             break;
           default:
-            throw new Error(`Service "${serviceName}" is not implemented by this worker.`);
+            throw new Error(`Service "${serviceId}" is not implemented by this worker.`);
         }
       },
-      mapRemoteServiceOnPort: (serviceName: string, port: MessagePort) => {
-        mapRemoteService(serviceName, Comlink.wrap(port));
+      mapRemoteServiceOnPort: (serviceId: string, port: MessagePort) => {
+        mapRemoteService(serviceId, Comlink.wrap(port));
       }
     },
     port

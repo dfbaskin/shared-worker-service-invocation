@@ -4,4 +4,5 @@ export * from './logData';
 export * from './uniqueIds';
 export * from './deferredPromise';
 export * from './serviceRegistration';
+export * from './serviceBindings';
 export * from './useRemoteServices';
