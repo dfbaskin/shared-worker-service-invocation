@@ -35,6 +35,7 @@
               "with": "pkg/webapp/src/environments/environment.prod.ts"
             }
           ],
+          "baseHref": "/shared-worker-service-invocation/",
           "optimization": true,
           "outputHashing": "all",
           "sourceMap": false,
