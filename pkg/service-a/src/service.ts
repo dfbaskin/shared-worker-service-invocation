@@ -1,8 +1,10 @@
 import {
   ServiceA,
+  getRemoteServiceB,
+  getRemoteServiceC,
+  getRemoteServiceD,
   getWorkerId,
   logData,
-  servicesBindings,
 } from '@example/definitions';
 
 function createResult() {
@@ -13,13 +15,11 @@ function createResult() {
   };
 }
 
-export const bindingsServiceA = servicesBindings();
-
 export function createServiceA(): ServiceA {
   return {
     doSomething: () => logData(createResult()),
     chainForward: async () => {
-      return await bindingsServiceA.getRemoteServiceB().chainForward({
+      return await getRemoteServiceB().chainForward({
         a: createResult(),
         order: ['a'],
       });
@@ -32,21 +32,21 @@ export function createServiceA(): ServiceA {
       };
     },
     transformFromB: async () => {
-      const result = await bindingsServiceA.getRemoteServiceB().doSomething();
+      const result = await getRemoteServiceB().doSomething();
       return logData({
         fromB: result,
         message: 'Transformed by Service A',
       });
     },
     transformFromC: async () => {
-      const result = await bindingsServiceA.getRemoteServiceC().doSomething();
+      const result = await getRemoteServiceC().doSomething();
       return logData({
         fromC: result,
         message: 'Transformed by Service A',
       });
     },
     transformFromD: async () => {
-      const result = await bindingsServiceA.getRemoteServiceD().doSomething();
+      const result = await getRemoteServiceD().doSomething();
       return logData({
         fromD: result,
         message: 'Transformed by Service A',

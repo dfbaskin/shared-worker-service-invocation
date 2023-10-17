@@ -1,6 +1,7 @@
 export function callbackGenerator(setResult: (value: string) => void) {
   return (fn: () => Promise<unknown>) => {
     return () => {
+      setResult('Pending ...');
       fn()
         .then((value) => {
           setResult(JSON.stringify(value, null, 2));

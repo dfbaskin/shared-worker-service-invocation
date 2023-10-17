@@ -1,4 +1,6 @@
-const workerId = globalThis.crypto.randomUUID();
+import { getUniqueId } from './uniqueIds';
+
+const workerId = getUniqueId();
 
 export function getWorkerId() {
   return workerId;

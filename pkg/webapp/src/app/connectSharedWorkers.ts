@@ -1,81 +1,60 @@
 import {
-  ServiceA,
-  ServiceB,
-  ServiceC,
-  ServiceD,
-  setRemoteServiceA,
-  setRemoteServiceB,
-  setRemoteServiceC,
-  setRemoteServiceD,
-  setServiceBindings,
+  wrapSharedWorkerService,
+  exposeService,
+  mapServiceToService,
 } from '@example/definitions';
-import * as Comlink from 'comlink';
-
-type BindingFn = (port: MessagePort) => Promise<void>;
 
 export async function connectToSharedWorkers() {
-  const workerOne = new SharedWorker(
+  const workerOne = connectToWorkerOne();
+  const workerTwo = connectToWorkerTwo();
+  const workerThree = connectToWorkerThree();
+
+  await exposeService('a-service', workerOne);
+  await exposeService('b-service', workerTwo);
+  await exposeService('c-service', workerThree);
+  await exposeService('d-service', workerThree);
+
+  await mapServiceToService('a-service', workerOne, [workerTwo, workerThree]);
+  await mapServiceToService('b-service', workerTwo, [workerOne, workerThree]);
+  await mapServiceToService('c-service', workerThree, [
+    workerOne,
+    workerTwo,
+    workerThree,
+  ]);
+  await mapServiceToService('d-service', workerThree, [
+    workerOne,
+    workerTwo,
+    workerThree,
+  ]);
+}
+
+function initializeWorker(name: string, worker: SharedWorker) {
+  worker.addEventListener('error', (event) => {
+    console.error(`Worker ${name} error`, event);
+  });
+  worker.port.start();
+}
+
+function connectToWorkerOne() {
+  const worker = new SharedWorker(
     new URL('./workers/sharedWorkerOne.ts', import.meta.url)
   );
-  const {
-    serviceA,
-    bindServiceBforWorkerOne,
-    bindServiceCforWorkerOne,
-    bindServiceDforWorkerOne,
-  } = Comlink.wrap(workerOne.port) as unknown as {
-    serviceA: Comlink.Remote<ServiceA>;
-    bindServiceBforWorkerOne: BindingFn;
-    bindServiceCforWorkerOne: BindingFn;
-    bindServiceDforWorkerOne: BindingFn;
-  };
-  workerOne.port.start();
+  initializeWorker('One', worker);
+  return wrapSharedWorkerService(worker.port);
+}
 
-  const workerTwo = new SharedWorker(
+function connectToWorkerTwo() {
+  const worker = new SharedWorker(
     new URL('./workers/sharedWorkerTwo.ts', import.meta.url)
   );
-  const {
-    serviceB,
-    bindServiceAforWorkerTwo,
-    bindServiceCforWorkerTwo,
-    bindServiceDforWorkerTwo,
-  } = Comlink.wrap(workerTwo.port) as unknown as {
-    serviceB: Comlink.Remote<ServiceB>;
-    bindServiceAforWorkerTwo: BindingFn;
-    bindServiceCforWorkerTwo: BindingFn;
-    bindServiceDforWorkerTwo: BindingFn;
-  };
-  workerTwo.port.start();
+  initializeWorker('Two', worker);
+  return wrapSharedWorkerService(worker.port);
+}
 
-  const workerThree = new SharedWorker(
+function connectToWorkerThree() {
+  const worker = new SharedWorker(
     new URL('./workers/sharedWorkerThree.ts', import.meta.url)
   );
-  const {
-    serviceC,
-    serviceD,
-    bindServiceAforWorkerThreeServiceC,
-    bindServiceBforWorkerThreeServiceC,
-    bindServiceAforWorkerThreeServiceD,
-    bindServiceBforWorkerThreeServiceD,
-  } = Comlink.wrap(workerThree.port) as unknown as {
-    serviceC: Comlink.Remote<ServiceC>;
-    serviceD: Comlink.Remote<ServiceD>;
-    bindServiceAforWorkerThreeServiceC: BindingFn;
-    bindServiceBforWorkerThreeServiceC: BindingFn;
-    bindServiceAforWorkerThreeServiceD: BindingFn;
-    bindServiceBforWorkerThreeServiceD: BindingFn;
-  };
-  workerThree.port.start();
-
-  setRemoteServiceA(serviceA);
-  setRemoteServiceB(serviceB);
-  setRemoteServiceC(serviceC);
-  setRemoteServiceD(serviceD);
-
-  await setServiceBindings([
-    [bindServiceBforWorkerOne, bindServiceAforWorkerTwo],
-    [bindServiceDforWorkerOne, bindServiceAforWorkerThreeServiceD],
-    [bindServiceCforWorkerOne, bindServiceAforWorkerThreeServiceC],
-    [bindServiceDforWorkerTwo, bindServiceBforWorkerThreeServiceD],
-    [bindServiceCforWorkerTwo, bindServiceBforWorkerThreeServiceC],
-  ]);
+  initializeWorker('Three', worker);
+  return wrapSharedWorkerService(worker.port);
 }
