@@ -13,9 +13,7 @@ const serviceRegistrationState = (function () {
   };
 })();
 
-export async function getRemoteService<T>(
-  serviceId: string
-): Promise<Comlink.Remote<T>> {
+export function getRemoteService<T>(serviceId: string): Comlink.Remote<T> {
   const { remoteServiceMap } = serviceRegistrationState();
   const remoteService = remoteServiceMap.get(serviceId) as
     | Comlink.Remote<T>

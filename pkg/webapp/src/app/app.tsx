@@ -19,120 +19,84 @@ export function App() {
         <span>A-Service:</span>
         <CallButton
           text="A"
-          onClick={cb(() =>
-            getRemoteServiceA().then((svc) => svc.doSomething())
-          )}
+          onClick={cb(() => getRemoteServiceA().doSomething())}
         />
         <CallButton
           text={['A', 'B']}
-          onClick={cb(() =>
-            getRemoteServiceA().then((svc) => svc.transformFromB())
-          )}
+          onClick={cb(() => getRemoteServiceA().transformFromB())}
         />
         <CallButton
           text={['A', 'C']}
-          onClick={cb(() =>
-            getRemoteServiceA().then((svc) => svc.transformFromC())
-          )}
+          onClick={cb(() => getRemoteServiceA().transformFromC())}
         />
         <CallButton
           text={['A', 'D']}
-          onClick={cb(() =>
-            getRemoteServiceA().then((svc) => svc.transformFromD())
-          )}
+          onClick={cb(() => getRemoteServiceA().transformFromD())}
         />
         <CallButton
           text={['A', 'B', 'C', 'D']}
-          onClick={cb(() =>
-            getRemoteServiceA().then((svc) => svc.chainForward())
-          )}
+          onClick={cb(() => getRemoteServiceA().chainForward())}
         />
       </div>
       <div>
         <span>B-Service:</span>
         <CallButton
           text="B"
-          onClick={cb(() =>
-            getRemoteServiceB().then((svc) => svc.doSomething())
-          )}
+          onClick={cb(() => getRemoteServiceB().doSomething())}
         />
         <CallButton
           text={['B', 'A']}
-          onClick={cb(() =>
-            getRemoteServiceB().then((svc) => svc.transformFromA())
-          )}
+          onClick={cb(() => getRemoteServiceB().transformFromA())}
         />
         <CallButton
           text={['B', 'C']}
-          onClick={cb(() =>
-            getRemoteServiceB().then((svc) => svc.transformFromC())
-          )}
+          onClick={cb(() => getRemoteServiceB().transformFromC())}
         />
         <CallButton
           text={['B', 'D']}
-          onClick={cb(() =>
-            getRemoteServiceB().then((svc) => svc.transformFromD())
-          )}
+          onClick={cb(() => getRemoteServiceB().transformFromD())}
         />
       </div>
       <div>
         <span>C-Service:</span>
         <CallButton
           text="C"
-          onClick={cb(() =>
-            getRemoteServiceC().then((svc) => svc.doSomething())
-          )}
+          onClick={cb(() => getRemoteServiceC().doSomething())}
         />
         <CallButton
           text={['C', 'A']}
-          onClick={cb(() =>
-            getRemoteServiceC().then((svc) => svc.transformFromA())
-          )}
+          onClick={cb(() => getRemoteServiceC().transformFromA())}
         />
         <CallButton
           text={['C', 'B']}
-          onClick={cb(() =>
-            getRemoteServiceC().then((svc) => svc.transformFromB())
-          )}
+          onClick={cb(() => getRemoteServiceC().transformFromB())}
         />
         <CallButton
           text={['C', 'D']}
-          onClick={cb(() =>
-            getRemoteServiceC().then((svc) => svc.transformFromD())
-          )}
+          onClick={cb(() => getRemoteServiceC().transformFromD())}
         />
       </div>
       <div>
         <span>D-Service:</span>
         <CallButton
           text="D"
-          onClick={cb(() =>
-            getRemoteServiceD().then((svc) => svc.doSomething())
-          )}
+          onClick={cb(() => getRemoteServiceD().doSomething())}
         />
         <CallButton
           text={['D', 'A']}
-          onClick={cb(() =>
-            getRemoteServiceD().then((svc) => svc.transformFromA())
-          )}
+          onClick={cb(() => getRemoteServiceD().transformFromA())}
         />
         <CallButton
           text={['D', 'B']}
-          onClick={cb(() =>
-            getRemoteServiceD().then((svc) => svc.transformFromB())
-          )}
+          onClick={cb(() => getRemoteServiceD().transformFromB())}
         />
         <CallButton
           text={['D', 'C']}
-          onClick={cb(() =>
-            getRemoteServiceD().then((svc) => svc.transformFromC())
-          )}
+          onClick={cb(() => getRemoteServiceD().transformFromC())}
         />
         <CallButton
           text={['D', 'C', 'B', 'A']}
-          onClick={cb(() =>
-            getRemoteServiceD().then((svc) => svc.chainBackward())
-          )}
+          onClick={cb(() => getRemoteServiceD().chainBackward())}
         />
       </div>
       {result && (

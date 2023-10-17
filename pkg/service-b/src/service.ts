@@ -19,39 +19,35 @@ export function createServiceB(): ServiceB {
   return {
     doSomething: () => logData(createResult()),
     chainForward: async (result) => {
-      return await getRemoteServiceC().then((svc) =>
-        svc.chainForward({
-          ...result,
-          b: createResult(),
-          order: [...result.order, 'b'],
-        })
-      );
+      return await getRemoteServiceC().chainForward({
+        ...result,
+        b: createResult(),
+        order: [...result.order, 'b'],
+      });
     },
     chainBackward: async (result) => {
-      return await getRemoteServiceA().then((svc) =>
-        svc.chainBackward({
-          ...result,
-          b: createResult(),
-          order: [...result.order, 'b'],
-        })
-      );
+      return await getRemoteServiceA().chainBackward({
+        ...result,
+        b: createResult(),
+        order: [...result.order, 'b'],
+      });
     },
     transformFromA: async () => {
-      const result = await getRemoteServiceA().then((svc) => svc.doSomething());
+      const result = await getRemoteServiceA().doSomething();
       return logData({
         fromA: result,
         message: 'Transformed by Service B',
       });
     },
     transformFromC: async () => {
-      const result = await getRemoteServiceC().then((svc) => svc.doSomething());
+      const result = await getRemoteServiceC().doSomething();
       return logData({
         fromC: result,
         message: 'Transformed by Service B',
       });
     },
     transformFromD: async () => {
-      const result = await getRemoteServiceD().then((svc) => svc.doSomething());
+      const result = await getRemoteServiceD().doSomething();
       return logData({
         fromD: result,
         message: 'Transformed by Service B',

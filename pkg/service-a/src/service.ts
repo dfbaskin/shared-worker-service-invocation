@@ -19,12 +19,10 @@ export function createServiceA(): ServiceA {
   return {
     doSomething: () => logData(createResult()),
     chainForward: async () => {
-      return await getRemoteServiceB().then((svc) =>
-        svc.chainForward({
-          a: createResult(),
-          order: ['a'],
-        })
-      );
+      return await getRemoteServiceB().chainForward({
+        a: createResult(),
+        order: ['a'],
+      });
     },
     chainBackward: async (result) => {
       return {
@@ -34,21 +32,21 @@ export function createServiceA(): ServiceA {
       };
     },
     transformFromB: async () => {
-      const result = await getRemoteServiceB().then((svc) => svc.doSomething());
+      const result = await getRemoteServiceB().doSomething();
       return logData({
         fromB: result,
         message: 'Transformed by Service A',
       });
     },
     transformFromC: async () => {
-      const result = await getRemoteServiceC().then((svc) => svc.doSomething());
+      const result = await getRemoteServiceC().doSomething();
       return logData({
         fromC: result,
         message: 'Transformed by Service A',
       });
     },
     transformFromD: async () => {
-      const result = await getRemoteServiceD().then((svc) => svc.doSomething());
+      const result = await getRemoteServiceD().doSomething();
       return logData({
         fromD: result,
         message: 'Transformed by Service A',
