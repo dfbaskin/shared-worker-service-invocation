@@ -1,4 +1,7 @@
-import { exposeServiceOnPort, mapRemoteServiceOnPort } from '@example/definitions';
+import {
+  exposeServiceOnPort,
+  mapRemoteServiceOnPort,
+} from '@example/definitions';
 import { createServiceA } from '@example/service-a';
 import * as Comlink from 'comlink';
 
@@ -15,8 +18,8 @@ ctx.onconnect = (evt) => {
       }),
       mapRemoteServiceOnPort: mapRemoteServiceOnPort(),
       workerInfo: () => ({
-        title: "Worker One"
-      })
+        title: 'Worker One',
+      }),
     },
     port
   );

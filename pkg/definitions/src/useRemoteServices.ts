@@ -1,5 +1,5 @@
-import { getRemoteService } from "./serviceRegistration";
-import { ServiceA, ServiceB, ServiceC, ServiceD } from "./services";
+import { getRemoteService } from './serviceRegistration';
+import { ServiceA, ServiceB, ServiceC, ServiceD } from './services';
 
 export function getRemoteServiceA() {
   return getRemoteService<ServiceA>('a-service');

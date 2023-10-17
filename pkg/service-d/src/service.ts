@@ -26,27 +26,29 @@ export function createServiceD(): ServiceD {
       };
     },
     chainBackward: async () => {
-      return await getRemoteServiceC().then(svc => svc.chainBackward({
-        d: createResult(),
-        order: ['d'],
-      }));
+      return await getRemoteServiceC().then((svc) =>
+        svc.chainBackward({
+          d: createResult(),
+          order: ['d'],
+        })
+      );
     },
     transformFromA: async () => {
-      const result = await getRemoteServiceA().then(svc => svc.doSomething());
+      const result = await getRemoteServiceA().then((svc) => svc.doSomething());
       return logData({
         fromA: result,
         message: 'Transformed by Service D',
       });
     },
     transformFromB: async () => {
-      const result = await getRemoteServiceB().then(svc => svc.doSomething());
+      const result = await getRemoteServiceB().then((svc) => svc.doSomething());
       return logData({
         fromB: result,
         message: 'Transformed by Service D',
       });
     },
     transformFromC: async () => {
-      const result = await getRemoteServiceC().then(svc => svc.doSomething());
+      const result = await getRemoteServiceC().then((svc) => svc.doSomething());
       return logData({
         fromC: result,
         message: 'Transformed by Service D',
