@@ -1,4 +1,4 @@
-import { getRemoteService } from "./serviceDiscovery";
+import { getRemoteService } from "./serviceRegistration";
 import { ServiceA, ServiceB, ServiceC, ServiceD } from "./services";
 
 export function getRemoteServiceA() {

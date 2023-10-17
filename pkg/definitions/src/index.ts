@@ -3,5 +3,5 @@ export * from './workerId';
 export * from './logData';
 export * from './uniqueIds';
 export * from './deferredPromise';
-export * from './serviceDiscovery';
+export * from './serviceRegistration';
 export * from './useRemoteServices';
