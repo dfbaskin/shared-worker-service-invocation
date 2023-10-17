@@ -2,10 +2,7 @@ import * as Comlink from 'comlink';
 import { mapRemoteService } from './serviceRegistration';
 
 export interface SharedWorkerService {
-  exposeServiceOnPort: (
-    serviceId: string,
-    port: MessagePort
-  ) => Promise<void>;
+  exposeServiceOnPort: (serviceId: string, port: MessagePort) => Promise<void>;
   mapRemoteServiceOnPort: (
     serviceId: string,
     port: MessagePort
@@ -44,4 +41,22 @@ export async function mapServiceToService(
       Comlink.transfer(port2, [port2])
     );
   }
+}
+
+export function exposeServiceOnPort(services: Record<string, unknown>) {
+  return (serviceId: string, port: MessagePort) => {
+    if (serviceId in services) {
+      Comlink.expose(services[serviceId], port);
+    } else {
+      throw new Error(
+        `Service "${serviceId}" is not implemented by this worker.`
+      );
+    }
+  };
+}
+
+export function mapRemoteServiceOnPort() {
+  return (serviceId: string, port: MessagePort) => {
+    mapRemoteService(serviceId, Comlink.wrap(port));
+  };
 }
