@@ -3,6 +3,8 @@ import * as ReactDOM from 'react-dom/client';
 import { connectToSharedWorkers } from './app/connectSharedWorkers';
 import App from './app/app';
 
+import "./logging";
+
 connectToSharedWorkers()
   .then(() => {
     const root = ReactDOM.createRoot(
