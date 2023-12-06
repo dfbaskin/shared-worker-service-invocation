@@ -46,6 +46,9 @@
     "url-loader": "^4.1.1"
   },
   "dependencies": {
+    "@opentelemetry/exporter-zipkin": "^1.18.1",
+    "@opentelemetry/sdk-trace-base": "^1.18.1",
+    "@opentelemetry/sdk-trace-web": "^1.18.1",
     "@swc/helpers": "~0.5.2",
     "comlink": "^4.4.1",
     "react": "18.2.0",
