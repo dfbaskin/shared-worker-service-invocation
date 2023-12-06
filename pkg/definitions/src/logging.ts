@@ -11,6 +11,6 @@ provider.addSpanProcessor(new SimpleSpanProcessor(new ZipkinExporter({})));
 
 provider.register();
 
-const tracer = provider.getTracer('shared-worker-service-invocation');
-
-export { tracer };
+export function getTracer() {
+  return provider.getTracer('shared-worker-service-invocation');
+}

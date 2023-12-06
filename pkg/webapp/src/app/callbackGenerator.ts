@@ -1,9 +1,10 @@
-import { tracer } from '../logging';
+import { getTracer } from '@example/definitions';
 
 export function callbackGenerator(setResult: (value: string) => void) {
+  const tracer = getTracer();
   return (fn: () => Promise<unknown>) => {
     return (text: string) => {
-      const span = tracer.startSpan(text);
+      const span = tracer.startSpan(`Invoking ${text}`);
       setResult('Pending ...');
       fn()
         .then((value) => {
