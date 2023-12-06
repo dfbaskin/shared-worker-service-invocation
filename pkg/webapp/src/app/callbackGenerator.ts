@@ -1,4 +1,4 @@
-import { getTracer } from '@example/definitions';
+import { fromError, getTracer } from '@example/definitions';
 
 export function callbackGenerator(setResult: (value: string) => void) {
   const tracer = getTracer();
@@ -14,6 +14,7 @@ export function callbackGenerator(setResult: (value: string) => void) {
         .catch((error) => {
           console.error(error);
           setResult(JSON.stringify({ error }, null, 2));
+          span.recordException(fromError(error));
           span.end();
         });
     };

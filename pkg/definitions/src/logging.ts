@@ -14,3 +14,7 @@ provider.register();
 export function getTracer() {
   return provider.getTracer('shared-worker-service-invocation');
 }
+
+export function fromError(err: unknown) {
+  return err instanceof Error ? err : new Error(String(err));
+}

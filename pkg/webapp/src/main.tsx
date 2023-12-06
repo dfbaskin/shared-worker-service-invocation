@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { connectToSharedWorkers } from './app/connectSharedWorkers';
 import App from './app/app';
-import { getTracer } from '@example/definitions';
+import { fromError, getTracer } from '@example/definitions';
 
 initializeApp();
 
@@ -22,8 +22,9 @@ async function initializeApp() {
     );
 
     span.end();
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    span.recordException(fromError(error));
     span.end();
   }
 }
