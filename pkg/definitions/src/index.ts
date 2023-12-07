@@ -6,4 +6,4 @@ export * from './deferredPromise';
 export * from './serviceRegistration';
 export * from './serviceBindings';
 export * from './useRemoteServices';
-export * from './telemetry';
+export * from './proxyMetaData';

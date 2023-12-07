@@ -58,10 +58,21 @@ export async function mapServiceToService(
   }
 }
 
-export function exposeServiceOnPort(services: Record<string, unknown>) {
+export function exposeServiceOnPort(
+  services: Record<string, unknown>,
+  setMetaData?: Record<string, (metadata: unknown) => void>
+) {
   return (serviceId: string, port: MessagePort) => {
     if (serviceId in services) {
-      Comlink.expose(services[serviceId], port);
+      const service = {
+        ...(services[serviceId] as Record<string, unknown>),
+        setMetaData:
+          setMetaData?.[serviceId] ??
+          (() => {
+            /*NOOP*/
+          }),
+      };
+      Comlink.expose(service, port);
     } else {
       throw new Error(
         `Service "${serviceId}" is not implemented by this worker.`

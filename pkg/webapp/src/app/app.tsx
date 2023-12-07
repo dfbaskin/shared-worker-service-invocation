@@ -1,103 +1,62 @@
 import { useState } from 'react';
 import styles from './app.module.scss';
-import {
-  getRemoteServiceA,
-  getRemoteServiceB,
-  getRemoteServiceC,
-  getRemoteServiceD,
-} from '@example/definitions';
 import { CallButton } from './callButton';
 import { callbackGenerator } from './callbackGenerator';
+import {
+  fromA,
+  fromAtoB,
+  fromAtoBCD,
+  fromAtoC,
+  fromAtoD,
+  fromB,
+  fromBtoA,
+  fromBtoC,
+  fromBtoD,
+  fromC,
+  fromCtoA,
+  fromCtoB,
+  fromCtoD,
+  fromD,
+  fromDtoA,
+  fromDtoB,
+  fromDtoC,
+  fromDtoCBA,
+} from './appCallbacks';
 
 export function App() {
   const [result, setResult] = useState<string>('');
   const cb = callbackGenerator(setResult);
-
   return (
     <div className={styles.view}>
       <div>
         <span>A-Service:</span>
-        <CallButton
-          text="A"
-          onClick={cb(() => getRemoteServiceA().doSomething())}
-        />
-        <CallButton
-          text={['A', 'B']}
-          onClick={cb(() => getRemoteServiceA().transformFromB())}
-        />
-        <CallButton
-          text={['A', 'C']}
-          onClick={cb(() => getRemoteServiceA().transformFromC())}
-        />
-        <CallButton
-          text={['A', 'D']}
-          onClick={cb(() => getRemoteServiceA().transformFromD())}
-        />
-        <CallButton
-          text={['A', 'B', 'C', 'D']}
-          onClick={cb(() => getRemoteServiceA().chainForward())}
-        />
+        <CallButton text="A" onClick={cb(fromA)} />
+        <CallButton text={['A', 'B']} onClick={cb(fromAtoB)} />
+        <CallButton text={['A', 'C']} onClick={cb(fromAtoC)} />
+        <CallButton text={['A', 'D']} onClick={cb(fromAtoD)} />
+        <CallButton text={['A', 'B', 'C', 'D']} onClick={cb(fromAtoBCD)} />
       </div>
       <div>
         <span>B-Service:</span>
-        <CallButton
-          text="B"
-          onClick={cb(() => getRemoteServiceB().doSomething())}
-        />
-        <CallButton
-          text={['B', 'A']}
-          onClick={cb(() => getRemoteServiceB().transformFromA())}
-        />
-        <CallButton
-          text={['B', 'C']}
-          onClick={cb(() => getRemoteServiceB().transformFromC())}
-        />
-        <CallButton
-          text={['B', 'D']}
-          onClick={cb(() => getRemoteServiceB().transformFromD())}
-        />
+        <CallButton text="B" onClick={cb(fromB)} />
+        <CallButton text={['B', 'A']} onClick={cb(fromBtoA)} />
+        <CallButton text={['B', 'C']} onClick={cb(fromBtoC)} />
+        <CallButton text={['B', 'D']} onClick={cb(fromBtoD)} />
       </div>
       <div>
         <span>C-Service:</span>
-        <CallButton
-          text="C"
-          onClick={cb(() => getRemoteServiceC().doSomething())}
-        />
-        <CallButton
-          text={['C', 'A']}
-          onClick={cb(() => getRemoteServiceC().transformFromA())}
-        />
-        <CallButton
-          text={['C', 'B']}
-          onClick={cb(() => getRemoteServiceC().transformFromB())}
-        />
-        <CallButton
-          text={['C', 'D']}
-          onClick={cb(() => getRemoteServiceC().transformFromD())}
-        />
+        <CallButton text="C" onClick={cb(fromC)} />
+        <CallButton text={['C', 'A']} onClick={cb(fromCtoA)} />
+        <CallButton text={['C', 'B']} onClick={cb(fromCtoB)} />
+        <CallButton text={['C', 'D']} onClick={cb(fromCtoD)} />
       </div>
       <div>
         <span>D-Service:</span>
-        <CallButton
-          text="D"
-          onClick={cb(() => getRemoteServiceD().doSomething())}
-        />
-        <CallButton
-          text={['D', 'A']}
-          onClick={cb(() => getRemoteServiceD().transformFromA())}
-        />
-        <CallButton
-          text={['D', 'B']}
-          onClick={cb(() => getRemoteServiceD().transformFromB())}
-        />
-        <CallButton
-          text={['D', 'C']}
-          onClick={cb(() => getRemoteServiceD().transformFromC())}
-        />
-        <CallButton
-          text={['D', 'C', 'B', 'A']}
-          onClick={cb(() => getRemoteServiceD().chainBackward())}
-        />
+        <CallButton text="D" onClick={cb(fromD)} />
+        <CallButton text={['D', 'A']} onClick={cb(fromDtoA)} />
+        <CallButton text={['D', 'B']} onClick={cb(fromDtoB)} />
+        <CallButton text={['D', 'C']} onClick={cb(fromDtoC)} />
+        <CallButton text={['D', 'C', 'B', 'A']} onClick={cb(fromDtoCBA)} />
       </div>
       {result && (
         <div>

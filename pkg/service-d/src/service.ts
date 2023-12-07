@@ -15,9 +15,15 @@ function createResult() {
   };
 }
 
-export function createServiceD(): ServiceD {
+export function createServiceD(getMetaData: () => unknown): ServiceD {
   return {
-    doSomething: () => logData(createResult()),
+    doSomething: () => {
+      const metadata = getMetaData();
+      return logData({
+        ...createResult(),
+        metadata,
+      });
+    },
     chainForward: async (result) => {
       return {
         ...result,

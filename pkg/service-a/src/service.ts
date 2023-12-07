@@ -15,9 +15,15 @@ function createResult() {
   };
 }
 
-export function createServiceA(): ServiceA {
+export function createServiceA(getMetaData: () => unknown): ServiceA {
   return {
-    doSomething: () => logData(createResult()),
+    doSomething: () => {
+      const metadata = getMetaData();
+      return logData({
+        ...createResult(),
+        metadata,
+      });
+    },
     chainForward: async () => {
       return await getRemoteServiceB().chainForward({
         a: createResult(),
