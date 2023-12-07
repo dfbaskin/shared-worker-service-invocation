@@ -1,4 +1,5 @@
 import {
+  getCurrentSpan,
   getRemoteServiceA,
   getRemoteServiceB,
   getRemoteServiceC,
@@ -10,9 +11,8 @@ async function withService<
     setMetaData: (metadata: unknown) => Promise<void>;
   }
 >(service: T): Promise<T> {
-  await service.setMetaData({
-    todo: "Get telemetry metadata"
-  });
+  const span = getCurrentSpan();
+  await service.setMetaData(span.getSpanMetaData());
   return service;
 }
 

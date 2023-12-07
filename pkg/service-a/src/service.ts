@@ -1,5 +1,6 @@
 import {
   ServiceA,
+  createSpan,
   getRemoteServiceB,
   getRemoteServiceC,
   getRemoteServiceD,
@@ -18,11 +19,15 @@ function createResult() {
 export function createServiceA(getMetaData: () => unknown): ServiceA {
   return {
     doSomething: () => {
-      const metadata = getMetaData();
-      return logData({
-        ...createResult(),
-        metadata,
+      console.log({metaData: getMetaData()});
+      const span = createSpan('svcA-doSomething', {
+        spanMetaData: getMetaData(),
       });
+      const result = logData({
+        ...createResult(),
+      });
+      span.endSpan();
+      return result;
     },
     chainForward: async () => {
       return await getRemoteServiceB().chainForward({
