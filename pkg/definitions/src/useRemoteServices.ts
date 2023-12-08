@@ -1,18 +1,33 @@
 import { getRemoteService } from './serviceRegistration';
 import { ServiceA, ServiceB, ServiceC, ServiceD } from './services';
+import { getCurrentSpan } from './telemetry';
+
+type MetaDataMethods = {
+  setMetaData: (metadata: unknown) => Promise<void>;
+};
 
 export function getRemoteServiceA() {
-  return getRemoteService<ServiceA>('a-service');
+  return withService(getRemoteService<ServiceA & MetaDataMethods>('a-service'));
 }
 
 export function getRemoteServiceB() {
-  return getRemoteService<ServiceB>('b-service');
+  return withService(getRemoteService<ServiceB & MetaDataMethods>('b-service'));
 }
 
 export function getRemoteServiceC() {
-  return getRemoteService<ServiceC>('c-service');
+  return withService(getRemoteService<ServiceC & MetaDataMethods>('c-service'));
 }
 
 export function getRemoteServiceD() {
-  return getRemoteService<ServiceD>('d-service');
+  return withService(getRemoteService<ServiceD & MetaDataMethods>('d-service'));
+}
+
+async function withService<
+  T extends {
+    setMetaData: (metadata: unknown) => Promise<void>;
+  }
+>(service: T): Promise<T> {
+  const span = getCurrentSpan();
+  await service.setMetaData(span.getSpanMetaData());
+  return service;
 }

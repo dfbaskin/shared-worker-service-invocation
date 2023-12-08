@@ -1,5 +1,6 @@
 import {
   ServiceA,
+  createSpan,
   getRemoteServiceB,
   getRemoteServiceC,
   getRemoteServiceD,
@@ -7,49 +8,85 @@ import {
   logData,
 } from '@example/definitions';
 
-function createResult() {
-  return {
-    value: 'A-service',
-    timestamp: new Date().toISOString(),
-    workerId: getWorkerId(),
-  };
-}
+export function createServiceA(getMetaData: () => unknown): ServiceA {
+  function createResult() {
+    return {
+      value: 'A-service',
+      timestamp: new Date().toISOString(),
+      workerId: getWorkerId(),
+    };
+  }
 
-export function createServiceA(): ServiceA {
+  function withSpan<T>(name: string, fn: () => T) {
+    const span = createSpan(`A-${name}`, {
+      spanMetaData: getMetaData(),
+    });
+    const result = span.withSpan(fn);
+    span.endSpan();
+    return result;
+  }
+
+  async function withSpanAsync<T>(name: string, fn: () => Promise<T>) {
+    const span = createSpan(`A-${name}`, {
+      spanMetaData: getMetaData(),
+    });
+    const result = await span.withSpan(fn);
+    span.endSpan();
+    return result;
+  }
+
   return {
-    doSomething: () => logData(createResult()),
+    doSomething: () => {
+      return withSpan('doSomething', () =>
+        logData({
+          ...createResult(),
+        })
+      );
+    },
     chainForward: async () => {
-      return await getRemoteServiceB().chainForward({
-        a: createResult(),
-        order: ['a'],
+      return withSpanAsync('chainForward', async () => {
+        const service = await getRemoteServiceB();
+        return await service.chainForward({
+          a: createResult(),
+          order: ['a'],
+        });
       });
     },
     chainBackward: async (result) => {
-      return {
+      return withSpan('chainBackward', () => ({
         ...result,
         a: createResult(),
         order: [...result.order, 'a'],
-      };
+      }));
     },
     transformFromB: async () => {
-      const result = await getRemoteServiceB().doSomething();
-      return logData({
-        fromB: result,
-        message: 'Transformed by Service A',
+      return withSpanAsync('transformFromB', async () => {
+        const service = await getRemoteServiceB();
+        const result = await service.doSomething();
+        return logData({
+          fromB: result,
+          message: 'Transformed by Service A',
+        });
       });
     },
     transformFromC: async () => {
-      const result = await getRemoteServiceC().doSomething();
-      return logData({
-        fromC: result,
-        message: 'Transformed by Service A',
+      return withSpanAsync('transformFromC', async () => {
+        const service = await getRemoteServiceC();
+        const result = await service.doSomething();
+        return logData({
+          fromC: result,
+          message: 'Transformed by Service A',
+        });
       });
     },
     transformFromD: async () => {
-      const result = await getRemoteServiceD().doSomething();
-      return logData({
-        fromD: result,
-        message: 'Transformed by Service A',
+      return withSpanAsync('transformFromD', async () => {
+        const service = await getRemoteServiceD();
+        const result = await service.doSomething();
+        return logData({
+          fromD: result,
+          message: 'Transformed by Service A',
+        });
       });
     },
   };

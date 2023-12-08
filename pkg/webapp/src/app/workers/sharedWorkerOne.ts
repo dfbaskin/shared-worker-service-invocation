@@ -1,26 +1,48 @@
 import {
+  createProxyMetaData,
+  createSpan,
   exposeServiceOnPort,
+  initializeTelemetry,
   mapRemoteServiceOnPort,
 } from '@example/definitions';
 import { createServiceA } from '@example/service-a';
 import * as Comlink from 'comlink';
 
-const ctx = globalThis as unknown as SharedWorkerGlobalScope;
+initializeTelemetry({
+  serviceName: 'shared-worker-one',
+});
 
-const serviceA = createServiceA();
+const span = createSpan('initialize');
 
-ctx.onconnect = (evt) => {
-  const [port] = evt.ports;
-  Comlink.expose(
-    {
-      exposeServiceOnPort: exposeServiceOnPort({
-        'a-service': serviceA,
-      }),
-      mapRemoteServiceOnPort: mapRemoteServiceOnPort(),
-      workerInfo: () => ({
-        title: 'Worker One',
-      }),
-    },
-    port
-  );
-};
+try {
+  const ctx = globalThis as unknown as SharedWorkerGlobalScope;
+
+  const { getMetaData, setMetaData } = createProxyMetaData();
+  const serviceA = createServiceA(getMetaData);
+
+  ctx.onconnect = (evt) => {
+    const [port] = evt.ports;
+    Comlink.expose(
+      {
+        exposeServiceOnPort: exposeServiceOnPort(
+          {
+            'a-service': serviceA,
+          },
+          {
+            'a-service': setMetaData,
+          }
+        ),
+        mapRemoteServiceOnPort: mapRemoteServiceOnPort(),
+        workerInfo: () => ({
+          title: 'Worker One',
+        }),
+      },
+      port
+    );
+  };
+} catch (error) {
+  console.error(error);
+  span.setSpanError(error);
+}
+
+span.endSpan();
