@@ -44,26 +44,29 @@ export function createServiceC(getMetaData: () => unknown): ServiceC {
       );
     },
     chainForward: async (result) => {
-      return withSpanAsync('chainForward', () =>
-        getRemoteServiceD().chainForward({
+      return withSpanAsync('chainForward', async () => {
+        const service = await getRemoteServiceD();
+        return await service.chainForward({
           ...result,
           c: createResult(),
           order: [...result.order, 'c'],
-        })
-      );
+        });
+      });
     },
     chainBackward: async (result) => {
-      return withSpanAsync('chainBackward', () =>
-        getRemoteServiceB().chainBackward({
+      return withSpanAsync('chainBackward', async () => {
+        const service = await getRemoteServiceB();
+        return await service.chainBackward({
           ...result,
           c: createResult(),
           order: [...result.order, 'c'],
-        })
-      );
+        });
+      });
     },
     transformFromA: async () => {
       return withSpanAsync('transformFromA', async () => {
-        const result = await getRemoteServiceA().doSomething();
+        const service = await getRemoteServiceA();
+        const result = await service.doSomething();
         return logData({
           fromA: result,
           message: 'Transformed by Service C',
@@ -72,7 +75,8 @@ export function createServiceC(getMetaData: () => unknown): ServiceC {
     },
     transformFromB: async () => {
       return withSpanAsync('transformFromB', async () => {
-        const result = await getRemoteServiceB().doSomething();
+        const service = await getRemoteServiceB();
+        const result = await service.doSomething();
         return logData({
           fromB: result,
           message: 'Transformed by Service C',
@@ -81,7 +85,8 @@ export function createServiceC(getMetaData: () => unknown): ServiceC {
     },
     transformFromD: async () => {
       return withSpanAsync('transformFromD', async () => {
-        const result = await getRemoteServiceD().doSomething();
+        const service = await getRemoteServiceD();
+        const result = await service.doSomething();
         return logData({
           fromD: result,
           message: 'Transformed by Service C',
