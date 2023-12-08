@@ -1,11 +1,19 @@
 import {
   createProxyMetaData,
+  createSpan,
   exposeServiceOnPort,
+  initializeTelemetry,
   mapRemoteServiceOnPort,
 } from '@example/definitions';
 import { createServiceC } from '@example/service-c';
 import { createServiceD } from '@example/service-d';
 import * as Comlink from 'comlink';
+
+initializeTelemetry({
+  serviceName: 'shared-worker-three',
+});
+
+const span = createSpan('initialize');
 
 try {
   const ctx = globalThis as unknown as SharedWorkerGlobalScope;
@@ -41,4 +49,7 @@ try {
   };
 } catch (error) {
   console.error(error);
+  span.setSpanError(error);
 }
+
+span.endSpan();

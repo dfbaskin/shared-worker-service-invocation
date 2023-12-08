@@ -85,8 +85,8 @@ function wrapSpan(span: Span) {
     span.end();
   };
 
-  const withSpan = async <T>(fn: () => Promise<T>) => {
-    return context.with(trace.setSpan(context.active(), span), async () =>
+  const withSpan = <T>(fn: () => T) => {
+    return context.with(trace.setSpan(context.active(), span), () =>
       fn()
     );
   };
