@@ -6,7 +6,9 @@ import {
   getRemoteServiceC,
   getRemoteServiceD,
   createSpan,
+  getCurrentSpan,
 } from '@example/definitions';
+import { operationOne, operationTwo } from './operations';
 
 export function createServiceB(getMetaData: () => unknown): ServiceB {
   function createResult() {
@@ -16,12 +18,23 @@ export function createServiceB(getMetaData: () => unknown): ServiceB {
       workerId: getWorkerId(),
     };
   }
+  async function createResultAsync() {
+    getCurrentSpan().addSpanEvent('Creating async result.', {
+      operationCount: 2,
+    });
+    const operations = await Promise.all([operationOne(), operationTwo()]);
+    return {
+      ...createResult(),
+      operations,
+    };
+  }
 
   function withSpan<T>(name: string, fn: () => T) {
     const span = createSpan(`B-${name}`, {
       spanMetaData: getMetaData(),
     });
     const result = span.withSpan(fn);
+    span.setSpanSuccess(`Finished ${name}.`);
     span.endSpan();
     return result;
   }
@@ -31,6 +44,7 @@ export function createServiceB(getMetaData: () => unknown): ServiceB {
       spanMetaData: getMetaData(),
     });
     const result = await span.withSpan(fn);
+    span.setSpanSuccess(`Finished ${name}.`);
     span.endSpan();
     return result;
   }
@@ -48,7 +62,7 @@ export function createServiceB(getMetaData: () => unknown): ServiceB {
         const service = await getRemoteServiceC();
         return await service.chainForward({
           ...result,
-          b: createResult(),
+          b: await createResultAsync(),
           order: [...result.order, 'b'],
         });
       });
@@ -58,7 +72,7 @@ export function createServiceB(getMetaData: () => unknown): ServiceB {
         const service = await getRemoteServiceA();
         return await service.chainBackward({
           ...result,
-          b: createResult(),
+          b: await createResultAsync(),
           order: [...result.order, 'b'],
         });
       });

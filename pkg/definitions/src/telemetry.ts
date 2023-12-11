@@ -12,6 +12,7 @@ import {
   trace,
   Span,
   SpanStatusCode,
+  Attributes,
 } from '@opentelemetry/api';
 
 let provider: WebTracerProvider | undefined;
@@ -80,6 +81,8 @@ export function getCurrentSpan() {
   return wrapSpan(span);
 }
 
+export type WrappedSpan = ReturnType<typeof wrapSpan>;
+
 function wrapSpan(span: Span) {
   const endSpan = () => {
     span.end();
@@ -91,6 +94,13 @@ function wrapSpan(span: Span) {
     );
   };
 
+  const setSpanSuccess = (message?: string) => {
+    span.setStatus({
+      code: SpanStatusCode.OK,
+      message
+    });
+  };
+
   const setSpanError = (error: unknown) => {
     span.setStatus({
       code: SpanStatusCode.ERROR,
@@ -98,8 +108,8 @@ function wrapSpan(span: Span) {
     });
   };
 
-  const addSpanEvent = (name: string) => {
-    span.addEvent(name);
+  const addSpanEvent = (name: string, attributes?: Attributes) => {
+    span.addEvent(name, attributes);
   };
 
   const getSpanMetaData = () => {
@@ -112,7 +122,7 @@ function wrapSpan(span: Span) {
     return { traceparent, tracestate };
   };
 
-  return { endSpan, withSpan, addSpanEvent, setSpanError, getSpanMetaData };
+  return { endSpan, withSpan, addSpanEvent, setSpanSuccess, setSpanError, getSpanMetaData };
 }
 
 function isSpanMetaData(
