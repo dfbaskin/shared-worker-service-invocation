@@ -8,23 +8,33 @@ initializeTelemetry({
   serviceName: 'web-app',
 });
 
-const span = createSpan('initialize');
+initialize()
+  .then(() => {
+    console.log('Initialized.');
+  })
+  .catch((error) => {
+    console.error('Failed to initialize.', error);
+  });
 
-try {
-  await connectToSharedWorkers();
-  span.addSpanEvent('Connected to shared workers.');
+async function initialize() {
+  const span = createSpan('initialize');
 
-  const root = ReactDOM.createRoot(
-    document.getElementById('root') as HTMLElement
-  );
-  root.render(
-    <StrictMode>
-      <App />
-    </StrictMode>
-  );
-  span.addSpanEvent('Rendered UI.');
-} catch (error) {
-  span.setSpanError(error);
+  try {
+    await connectToSharedWorkers();
+    span.addSpanEvent('Connected to shared workers.');
+
+    const root = ReactDOM.createRoot(
+      document.getElementById('root') as HTMLElement
+    );
+    root.render(
+      <StrictMode>
+        <App />
+      </StrictMode>
+    );
+    span.addSpanEvent('Rendered UI.');
+  } catch (error) {
+    span.setSpanError(error);
+  }
+
+  span.endSpan();
 }
-
-span.endSpan();
