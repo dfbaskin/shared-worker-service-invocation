@@ -1,9 +1,9 @@
 import {
   BatchSpanProcessor,
   WebTracerProvider,
+  StackContextManager,
 } from '@opentelemetry/sdk-trace-web';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-import { ZoneContextManager } from '@opentelemetry/context-zone';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { Resource } from '@opentelemetry/resources';
 import {
@@ -39,14 +39,15 @@ export function initializeTelemetry(options: { serviceName: string }) {
   );
 
   provider.register({
-    contextManager: new ZoneContextManager(),
+    contextManager: new StackContextManager(),
   });
 }
 
 export function createSpan(
   name: string,
   options?: {
-    spanMetaData: unknown;
+    parentSpan?: WrappedSpan;
+    spanMetaData?: unknown;
   }
 ) {
   if (!provider) {
@@ -55,16 +56,14 @@ export function createSpan(
 
   const tracer = provider.getTracer('shared-worker-service-invocation');
 
-  const spanMetaData = options?.spanMetaData;
-  if (isSpanMetaData(spanMetaData)) {
+  const { spanMetaData, parentSpan } = options || {};
+  if (parentSpan) {
+    const activeContext = parentSpan.setAsCurrentSpan();
+    const span = tracer.startSpan(name, undefined, activeContext);
+    return wrapSpan(span);
+  } else if (isSpanMetaData(spanMetaData)) {
     const activeContext = propagation.extract(context.active(), spanMetaData);
-    const span = tracer.startSpan(
-      name,
-      {
-        attributes: {},
-      },
-      activeContext
-    );
+    const span = tracer.startSpan(name, undefined, activeContext);
     trace.setSpan(activeContext, span);
     return wrapSpan(span);
   } else {
@@ -88,16 +87,18 @@ function wrapSpan(span: Span) {
     span.end();
   };
 
+  const setAsCurrentSpan = () => {
+    return trace.setSpan(context.active(), span);
+  };
+
   const withSpan = <T>(fn: () => T) => {
-    return context.with(trace.setSpan(context.active(), span), () =>
-      fn()
-    );
+    return context.with(trace.setSpan(context.active(), span), () => fn());
   };
 
   const setSpanSuccess = (message?: string) => {
     span.setStatus({
       code: SpanStatusCode.OK,
-      message
+      message,
     });
   };
 
@@ -122,7 +123,15 @@ function wrapSpan(span: Span) {
     return { traceparent, tracestate };
   };
 
-  return { endSpan, withSpan, addSpanEvent, setSpanSuccess, setSpanError, getSpanMetaData };
+  return {
+    endSpan,
+    withSpan,
+    addSpanEvent,
+    setSpanSuccess,
+    setSpanError,
+    getSpanMetaData,
+    setAsCurrentSpan,
+  };
 }
 
 function isSpanMetaData(

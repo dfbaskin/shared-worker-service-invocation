@@ -1,8 +1,8 @@
-import { createSpan } from "@example/definitions";
+import { WrappedSpan, createSpan } from "@example/definitions";
 
-export async function operationOne() {
+export async function operationOne(parentSpan?: WrappedSpan) {
   const timeout = 1000;
-  const span = createSpan("operation-one");
+  const span = createSpan("operation-one", { parentSpan });
   span.addSpanEvent("Starting operation one.", {
     timeout
   })
@@ -12,9 +12,9 @@ export async function operationOne() {
   return "operation-one";
 }
 
-export async function operationTwo() {
+export async function operationTwo(parentSpan?: WrappedSpan) {
   const timeout = 500;
-  const span = createSpan("operation-two");
+  const span = createSpan("operation-two", { parentSpan });
   span.addSpanEvent("Starting operation two.", {
     timeout
   })
