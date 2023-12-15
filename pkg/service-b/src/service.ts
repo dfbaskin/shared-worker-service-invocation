@@ -6,7 +6,7 @@ import {
   getRemoteServiceC,
   getRemoteServiceD,
   createSpan,
-  getCurrentSpan,
+  WrappedSpan,
 } from '@example/definitions';
 import { operationOne, operationTwo } from './operations';
 
@@ -18,11 +18,11 @@ export function createServiceB(getMetaData: () => unknown): ServiceB {
       workerId: getWorkerId(),
     };
   }
-  async function createResultAsync() {
-    getCurrentSpan().addSpanEvent('Creating async result.', {
+  async function createResultAsync(parentSpan: WrappedSpan) {
+    parentSpan.addSpanEvent('Creating async result.', {
       operationCount: 2,
     });
-    const operations = await Promise.all([operationOne(), operationTwo()]);
+    const operations = await Promise.all([operationOne(parentSpan), operationTwo(parentSpan)]);
     return {
       ...createResult(),
       operations,
@@ -39,11 +39,11 @@ export function createServiceB(getMetaData: () => unknown): ServiceB {
     return result;
   }
 
-  async function withSpanAsync<T>(name: string, fn: () => Promise<T>) {
+  async function withSpanAsync<T>(name: string, fn: (parentSpan: WrappedSpan) => Promise<T>) {
     const span = createSpan(`B-${name}`, {
       spanMetaData: getMetaData(),
     });
-    const result = await span.withSpan(fn);
+    const result = await span.withSpan(() => fn(span));
     span.setSpanSuccess(`Finished ${name}.`);
     span.endSpan();
     return result;
@@ -58,21 +58,21 @@ export function createServiceB(getMetaData: () => unknown): ServiceB {
       );
     },
     chainForward: async (result) => {
-      return withSpanAsync('chainForward', async () => {
+      return withSpanAsync('chainForward', async (parentSpan) => {
         const service = await getRemoteServiceC();
         return await service.chainForward({
           ...result,
-          b: await createResultAsync(),
+          b: await createResultAsync(parentSpan),
           order: [...result.order, 'b'],
         });
       });
     },
     chainBackward: async (result) => {
-      return withSpanAsync('chainBackward', async () => {
+      return withSpanAsync('chainBackward', async (parentSpan) => {
         const service = await getRemoteServiceA();
         return await service.chainBackward({
           ...result,
-          b: await createResultAsync(),
+          b: await createResultAsync(parentSpan),
           order: [...result.order, 'b'],
         });
       });
