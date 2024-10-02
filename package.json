@@ -46,9 +46,9 @@
     "@nx/eslint": "19.8.3"
   },
   "dependencies": {
-    "@opentelemetry/exporter-trace-otlp-http": "^0.45.1",
-    "@opentelemetry/sdk-trace-base": "^1.18.1",
-    "@opentelemetry/sdk-trace-web": "^1.18.1",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.53.0",
+    "@opentelemetry/sdk-trace-base": "^1.26.0",
+    "@opentelemetry/sdk-trace-web": "^1.26.0",
     "@swc/helpers": "0.5.13",
     "comlink": "^4.4.1",
     "react": "18.3.1",
