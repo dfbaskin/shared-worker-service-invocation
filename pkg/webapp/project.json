@@ -19,7 +19,6 @@
         "assets": ["pkg/webapp/src/favicon.ico", "pkg/webapp/src/assets"],
         "styles": ["pkg/webapp/src/styles.scss"],
         "scripts": [],
-        "isolatedConfig": true,
         "webpackConfig": "pkg/webapp/webpack.config.js"
       },
       "configurations": {
