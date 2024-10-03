@@ -1,12 +1,15 @@
-import { useCallback, useRef } from 'react';
-import { SharedWorkerShutdown } from './workers/sharedWorkerShutdown';
+import { useRef } from 'react';
+import {
+  SharedWorkerShutdownMessages,
+  createSharedWorkersShutdownChannel,
+} from './workers/sharedWorkerShutdownChannel';
 
 export function useSharedWorkerShutdown() {
   const channelRef = useRef<BroadcastChannel | null>(null);
   if (!channelRef.current) {
-    channelRef.current = new BroadcastChannel('shared-workers-channel');
+    channelRef.current = createSharedWorkersShutdownChannel();
     channelRef.current.onmessage = (
-      event: MessageEvent<SharedWorkerShutdown>
+      event: MessageEvent<SharedWorkerShutdownMessages>
     ) => {
       if (event.data.type === 'shutdown') {
         channelRef.current?.close();
@@ -15,16 +18,7 @@ export function useSharedWorkerShutdown() {
     };
   }
 
-  const shutdown = useCallback(() => {
-    // const broadcast: SharedWorkerShutdown = {
-    //   type: 'shutdown',
-    // };
-    // channelRef.current?.postMessage(broadcast);
-    // channelRef.current?.close();
-    navigateToResetPage();
-  }, []);
-
-  return { shutdown };
+  return { shutdown: navigateToResetPage };
 }
 
 function navigateToResetPage() {

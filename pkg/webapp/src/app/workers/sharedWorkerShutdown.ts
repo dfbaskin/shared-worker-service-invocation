@@ -1,25 +1,21 @@
-export type SharedWorkerShutdown =
-  | {
-      type: 'shutdown';
-    }
-  | {
-      type: 'unloaded';
-      sharedWorkerId: string;
-      message: string;
-    };
+import {
+  SharedWorkerShutdownMessages,
+  createSharedWorkersShutdownChannel,
+} from './sharedWorkerShutdownChannel';
 
 export function handleSharedWorkerShutdown(
   sharedWorkerId: string,
   scope: SharedWorkerGlobalScope
 ) {
-  const broadcastChannel = new BroadcastChannel('shared-workers-channel');
-  const message = `SharedWorker ${sharedWorkerId} is shutting down`;
-  broadcastChannel.onmessage = (event: MessageEvent<SharedWorkerShutdown>) => {
+  const broadcastChannel = createSharedWorkersShutdownChannel();
+  broadcastChannel.onmessage = (
+    event: MessageEvent<SharedWorkerShutdownMessages>
+  ) => {
     if (event.data.type === 'shutdown') {
-      const broadcast: SharedWorkerShutdown = {
+      const broadcast: SharedWorkerShutdownMessages = {
         type: 'unloaded',
         sharedWorkerId,
-        message,
+        message: `SharedWorker ${sharedWorkerId} is shutting down`,
       };
       broadcastChannel.postMessage(broadcast);
       setTimeout(() => {
