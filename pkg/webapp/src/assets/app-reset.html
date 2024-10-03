@@ -28,9 +28,18 @@
   </head>
   <body>
     <div id="message">
-      <div>Resetting Shared Workers ...</div>
+      <div>
+        Resetting Shared Workers ...
+        <br />
+        <button type="button" id="reloadBtn">Reload</button>
+      </div>
     </div>
     <script type="module">
+      const reloadBtn = document.getElementById('reloadBtn');
+      reloadBtn.addEventListener('click', () => {
+        window.location.href = '/';
+      });
+
       const broadcastChannel = new BroadcastChannel('shared-workers-channel');
       const workersSet = new Set();
       const expectedSet = new Set(['one', 'two', 'three']);
@@ -48,7 +57,10 @@
         }
       };
       console.log('Shutting down Shared Workers ...');
-      broadcastChannel.postMessage({ type: 'shutdown' });
+      // // Demonstrates race condition
+      // setTimeout(() => {
+        broadcastChannel.postMessage({ type: 'shutdown' });
+      // }, 2000);
     </script>
   </body>
 </html>
