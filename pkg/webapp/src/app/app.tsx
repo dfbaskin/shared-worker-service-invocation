@@ -22,10 +22,13 @@ import {
   fromDtoC,
   fromDtoCBA,
 } from './appCallbacks';
+import { useSharedWorkerShutdown } from './useSharedWorkerShutdown';
 
 export function App() {
   const [result, setResult] = useState<string>('');
   const cb = callbackGenerator(setResult);
+  const { shutdown } = useSharedWorkerShutdown();
+
   return (
     <div className={styles.view}>
       <div>
@@ -57,6 +60,12 @@ export function App() {
         <CallButton text={['D', 'B']} onClick={cb(fromDtoB)} />
         <CallButton text={['D', 'C']} onClick={cb(fromDtoC)} />
         <CallButton text={['D', 'C', 'B', 'A']} onClick={cb(fromDtoCBA)} />
+      </div>
+      <div>
+        <span>Controls:</span>
+        <button type="button" onClick={() => shutdown()}>
+          Reset
+        </button>
       </div>
       {result && (
         <div>

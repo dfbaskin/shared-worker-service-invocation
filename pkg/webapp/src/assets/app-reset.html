@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Webapp</title>
+    <base href="/" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <style>
+      #message {
+        font-size: 24px;
+        font-weight: bold;
+        margin-top: 50vh;
+        transform: translateY(-50%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        & > div {
+          background: linear-gradient(0, #ddd, #fff);
+          padding: 2rem;
+          border: 1px solid black;
+          width: fit-content;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="message">
+      <div>Resetting Shared Workers ...</div>
+    </div>
+    <script type="module">
+      const broadcastChannel = new BroadcastChannel('shared-workers-channel');
+      const workersSet = new Set();
+      const expectedSet = new Set(['one', 'two', 'three']);
+      broadcastChannel.onmessage = (event) => {
+        if (event.data.type === 'unloaded') {
+          const { sharedWorkerId, message } = event.data;
+          workersSet.add(sharedWorkerId);
+          console.log(message);
+          if (workersSet.difference(expectedSet).size === 0) {
+            console.log('All Shared Workers have been reset.');
+            setTimeout(() => {
+              window.location.href = '/';
+            }, 100);
+          }
+        }
+      };
+      console.log('Shutting down Shared Workers ...');
+      broadcastChannel.postMessage({ type: 'shutdown' });
+    </script>
+  </body>
+</html>

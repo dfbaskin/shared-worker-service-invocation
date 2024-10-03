@@ -8,6 +8,7 @@ import {
 import { createServiceC } from '@example/service-c';
 import { createServiceD } from '@example/service-d';
 import * as Comlink from 'comlink';
+import { handleSharedWorkerShutdown } from './sharedWorkerShutdown';
 
 initializeTelemetry({
   serviceName: 'shared-worker-three',
@@ -47,6 +48,8 @@ try {
       port
     );
   };
+
+  handleSharedWorkerShutdown('three', ctx);
 } catch (error) {
   console.error(error);
   span.setSpanError(error);
